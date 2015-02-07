@@ -23,6 +23,7 @@ angular.module('aplayerApp')
           });
           var line = 0;
           socket.on(uid + "_client", function (data) {
+            console.log(data);
             $scope.safeApply(function(){
               $scope.tracks = data.tracks;
               $scope.trackIndex = data.trackIndex;

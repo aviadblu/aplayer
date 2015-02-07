@@ -1,0 +1,72 @@
+<div class="home_view">
+  <div class="mode_select">
+    <div class="main_icon create_server" ng-click="createServer()">
+      <h2>New Party</h2>
+      <img src="../images/music-server.png" >
+    </div>
+    <div class="main_icon open_guest" ng-click="openGuest()">
+      <h2>Join Party</h2>
+      <img src="../images/music-client.png" >
+    </div>
+    <br class="clr">
+  </div>
+</div>
+
+
+
+<style>
+  .mode_select {
+    width:100%;
+    max-width:600px;
+    border:0px solid #fff;
+    min-height:300px;
+    margin-top:20px
+  }
+
+  h2 {
+    font-size: 24px;
+    maring:0;
+    margin-bottom:15px;
+    font-family: 'Podkova';
+    font-weight:700;
+  }
+
+  .main_icon {
+    width:280px;
+    border:2px solid #fff;
+    text-align: center;
+    float:left;
+    -webkit-border-radius: 25px;
+    border-radius: 25px;
+    height:280px;
+    background-color:#191919;
+    cursor:pointer;
+    -webkit-box-shadow: 2px 2px 6px 0 #171717;
+box-shadow: 2px 2px 6px 0 #171717;
+  }
+
+  .main_icon:hover {
+    border-color:#7ab700;
+  }
+  .main_icon:hover h2{
+    color:#7ab700;
+  }
+
+  .create_server {
+    float:left;
+  }
+
+  .create_server img {
+    width:220px;
+    height:220px;
+  }
+
+  .open_guest {
+    float:right;
+  }
+
+  .open_guest img {
+    width:220px;
+    height:220px;
+  }
+</style>

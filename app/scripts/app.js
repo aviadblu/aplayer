@@ -56,27 +56,27 @@ angular
           }
 
           //otherwise, retrieve the identity data from the server, update the identity object, and then resolve.
-          //$http.get('/api/accounts/identity', { ignoreErrors: true })
-          //  .success(function(data) {
-          //    _identity = data;
-          //    _authenticated = true;
-          //    deferred.resolve(_identity);
-          //  })
-          //  .error(function () {
-          //    _identity = null;
-          //    _authenticated = false;
-          //    deferred.resolve(_identity);
-          //  });
+          $http.get('/api/accounts/identity', { ignoreErrors: true })
+           .success(function(data) {
+             _identity = data;
+             _authenticated = true;
+             deferred.resolve(_identity);
+           })
+           .error(function () {
+             _identity = null;
+             _authenticated = false;
+             deferred.resolve(_identity);
+           });
 
           // for the sake of the demo, fake the lookup by using a timeout to create a valid
           // fake identity. in reality,  you'll want something more like the $http request
           // commented out above. in this example, we fake looking up to find the user is
           // not logged in
-          var self = this;
-          $timeout(function() {
-            self.authenticate(null);
-            deferred.resolve(_identity);
-          }, 1000);
+          // var self = this;
+          // $timeout(function() {
+          //   self.authenticate(null);
+          //   deferred.resolve(_identity);
+          // }, 1000);
 
           return deferred.promise;
         }
@@ -147,23 +147,54 @@ angular
 
 
     $urlRouterProvider.otherwise(function() {
-      return '/app/player';
+      return '/app/home';
     });
 
     $stateProvider
+
+      .state('login', {
+        url: '/login',
+        controller: 'LoginCtrl',
+        templateUrl: 'views/login.html'
+      })
+
+
+      .state('server', {
+        abstract: true,
+        url: '/server',
+        templateUrl: 'views/app.html',
+        resolve: {
+          authorize: ['authorization',
+            function(authorization) {
+              console.log("~~~~~~~~~~")
+
+              return authorization.authorize();
+            }
+          ]
+        }
+      })
+      //player
+      .state('server.player', {
+        url: '/player',
+        controller: 'PlayerCtrl',
+        templateUrl: 'views/player.html',
+        data: {
+          roles: ['User']
+        },
+      })
 
       .state('app', {
         abstract: true,
         url: '/app',
         templateUrl: 'views/app.html'
       })
-      //player
-      .state('app.player', {
-        url: '/player',
-        controller: 'PlayerCtrl',
-        templateUrl: 'views/player.html'
+      //home
+      .state('app.home', {
+        url: '/home',
+        controller: 'HomeCtrl',
+        templateUrl: 'views/home.html'
       })
-      //player
+      //client
       .state('app.client', {
         url: '/client',
         controller: 'ClientCtrl',
@@ -172,4 +203,3 @@ angular
       ////////////////
 
   }]);
-

@@ -6,8 +6,8 @@ var accounts = {
             status: "ok",
             roles: ["User"],
             user_data: {
-                name: "Oleg Verhovsky",
-                image: "images/oleg.jpg"
+                name: "Aviad Blumenfeld",
+                image: "images/aviad.jpg"
             }
         };
         console.log("~~~~~~user identify: ~~~~");

@@ -1,12 +1,89 @@
+
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
+@import url(http://fonts.googleapis.com/css?family=Podkova:300,400,700);
+
 body {
-  background-color: #272727;
+  background-color: #000;
   color:#fff;
-  font-family: Arial;
+  font-family: 'Open Sans', Arial;
+  background-image:url(../images/bg.jpg);
+  background-position:top center;
+  background-repeat: no-repeat;
+  background-size:200%;
+  padding-top:80px;
+}
+
+
+div {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  position: relative;
+  margin:0px auto;
+}
+
+.clr {
+  clear: both;
+}
+
+header {
+  display:block;
+  height:60px;
+  border-bottom:1px solid #191919;
+  background-color: #272727;
+  width:100%;
+  position:fixed;
+  top:0px;
+  left:0px;
+  padding:5px 20px;
+}
+
+.logo {
+  display:block;
+  width:210px;
+  height:45px;
+  cursor:pointer;
+  float:left;
+  background-image:url(../images/juke_player_logo_60_240.png);
+  background-position:center;
+  background-size:100%;
+}
+
+usertop {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  display:block;
+  height:50px;
+  float:right;
+  border:0px solid #fff;
+  line-height:60px;
+}
+
+.login {
+  display:block;
+  height:38px;
+  width:35px;
+  background-image:url(../images/login.png);
+  background-position:center;
+  background-size:100%;
+  margin:10px 15px 0px 15px;
+}
+
+.user_data {
+  height:50px;
+  line-height:50px;
+}
+.user_data img {
+  height:40px;
+  margin-right:7px;
 }
 
 player {
   display: block;
   max-width:600px;
+  position: relative;
+  margin:0px auto;
 }
 
 .table_wrapper {
@@ -209,5 +286,3 @@ tr.selected td {
   border-radius: 24px;
   margin:5px 0px;
 }
-
-
