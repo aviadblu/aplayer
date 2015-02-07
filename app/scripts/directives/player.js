@@ -234,6 +234,19 @@ angular.module('aplayerApp')
         };
 
 
+        var socket;
+        var initSocket = function() {
+          socket = io.connect(res.ide.url, {reconnect: true});
+          socket.on('connect', function(socket) {
+            console.log('Connected!');
+          });
+          var line = 0;
+          socket.on(uid, function (data) {
+            updateProgress(data);
+          });
+        }
+
+
       }
   };
 })

@@ -167,7 +167,7 @@ angular
       .state('app.client', {
         url: '/client',
         controller: 'ClientCtrl',
-        templateUrl: 'views/client.html'
+        templateUrl: 'views/clientView.html'
       })
       ////////////////
 
