@@ -235,17 +235,56 @@ angular.module('aplayerApp')
 
 
         var socket;
+        var uid = 87;
         var initSocket = function() {
-          socket = io.connect(res.ide.url, {reconnect: true});
+          socket = io.connect("localhost:3000", {reconnect: true});
           socket.on('connect', function(socket) {
             console.log('Connected!');
           });
           var line = 0;
           socket.on(uid, function (data) {
-            updateProgress(data);
-          });
-        }
+            console.log(data);
+            var audio = ngAudio.load(data.song.path);
 
+            $scope.tracks.push({
+              name: data.song.name,
+              path: data.song.path,
+              audio: audio
+            });
+          });
+        };
+
+        initSocket();
+
+
+        // update server on list change
+        var watcher = $scope.$watch('trackIndex', function() {
+          // update player state:
+          updateServer();
+        });
+
+
+        var updateServer = function() {
+
+          // remove audio data:
+          var tracks = [];
+          for(var i in $scope.tracks) {
+            tracks[i] = {
+              name: $scope.tracks[i].name,
+              length: $scope.getTimeFrameFormat($scope.tracks[i].audio.duration)
+            };
+          }
+
+
+          $http.post('/api/songs/update_state',{
+            uid: uid,
+            tracks: tracks,
+            trackIndex: $scope.trackIndex
+          });
+        };
+
+
+        setInterval(updateServer,2500);
 
       }
   };

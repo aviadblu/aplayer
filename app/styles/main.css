@@ -40,6 +40,10 @@ td {
   cursor:pointer;
 }
 
+.no_actions td {
+  cursor: default;
+}
+
 td.status_icon {
   width:50px;
   background-image: url(../images/wait.png);
@@ -193,6 +197,17 @@ tr.selected td {
   width:30px;
   text-align:center;
   margin-left:-15px;
+}
+
+
+.pick_button {
+  display: block;
+  width:40px;
+  height:40px;
+  border:1px solid #fff;
+  background-color: #000;
+  border-radius: 24px;
+  margin:5px 0px;
 }
 
 

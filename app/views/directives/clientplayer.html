@@ -1,0 +1,14 @@
+<div class="table_wrapper no_actions">
+  <table>
+    <tr>
+      <th></th>
+      <th>Name</th>
+      <th>Length</th>
+    </tr>
+    <tr ng-repeat="song in tracks"  ng-class="{selected:trackIndex==$index,playing:trackIndex==$index}">
+      <td class="status_icon"></td>
+      <td ng-bind="song.name"></td>
+      <td ng-bind="song.length"></td>
+    </tr>
+  </table>
+</div>

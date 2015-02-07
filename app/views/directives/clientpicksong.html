@@ -1,0 +1,16 @@
+<h3>Pick song:</h3>
+
+<div class="table_wrapper no_actions">
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Length</th>
+      <th></th>
+    </tr>
+    <tr ng-repeat="song in songs">
+      <td ng-bind="song.name"></td>
+      <td ng-bind="song.audio.duration"></td>
+      <td><button class="pick_button" ng-click="pickSong($index)">Pick</button></td>
+    </tr>
+  </table>
+</div>

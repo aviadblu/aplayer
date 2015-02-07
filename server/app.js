@@ -26,25 +26,34 @@ else {
 	process.on('uncaughtException', console.error.bind(console));
 }
 
+var appSocket = require('./lib/node_app_socket');
+var appContext = require('./lib/node_apps').AppContext;
+
 // Setup server
 var app = express();
 var server = require('http').createServer(app);
 
+config.app = app;
 
 
 
+
+
+
+var io = require('socket.io')(server);
+app.io = io;
+
+appSocket.install({ io: io, appContext: appContext });
 
 require('./config/express')(app);
 require('./routes')(app);
-config.app = app;
-
 
 // Start server
 
 
 
 if (!module.parent) {
-  mserver.listen(config.port, function () {
+  server.listen(config.port, function () {
     console.log('Express server listening on %d, in %s mode, client is%s minified', config.port, app.get('env'), (config.client_minified == "1" ? "" : " not"));
   });
 } else {
