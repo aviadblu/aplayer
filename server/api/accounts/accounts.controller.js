@@ -1,4 +1,8 @@
 var config = require('../../config/environment');
+var db = require('../../config/firebase/connection');
+var accounts_db = db.child('accounts');
+
+
 
 var accounts = {
     identity: function(req, res) {
@@ -14,6 +18,18 @@ var accounts = {
         console.log(userData);
         console.log("~~~~~~user identify: ~~~~");
         return res.send(userData);
+    },
+    test: function() {
+      console.log("save data in the database");
+
+      var user_data = {
+        name: "aviad"
+      };
+
+      accounts_db.set(user_data, function(err){
+        console.log(err);
+        console.log("Saved!");
+      });
     }
 };
 
