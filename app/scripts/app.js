@@ -11,7 +11,9 @@
 angular
   .module('aplayerApp', [
     'ui.router',
-    'ngAudio'
+    'ngAudio',
+    'auth_service',
+    'ui.bootstrap'
   ])
   .factory('principal', ['$q', '$http', '$timeout',
     function($q, $http, $timeout) {
@@ -141,7 +143,7 @@ angular
   }])
 
 
-  .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+  .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', function($stateProvider, $urlRouterProvider, $httpProvider) {
 
 
 
@@ -150,12 +152,20 @@ angular
       return '/app/home';
     });
 
+
+    $httpProvider.interceptors.push('AuthHttpInterceptor');
+
     $stateProvider
 
       .state('login', {
         url: '/login',
         controller: 'LoginCtrl',
         templateUrl: 'views/login.html'
+      })
+
+      .state('auth', {
+        url: '/auth/:token',
+        controller: 'AuthCtrl'
       })
 
 

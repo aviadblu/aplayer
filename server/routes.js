@@ -7,7 +7,7 @@
 var errors = require('./components/errors');
 var path = require('path');
 var config = require('./config/environment');
-
+var passport = require('passport');
 
 
 var allowCrossDomain = function (req, res, next) {
@@ -28,6 +28,11 @@ module.exports = function (app) {
 	app.use('/api/accounts', require('./api/accounts'));
   app.use('/api/songs', require('./api/songs'));
 	// All other routes should redirect to the index.html
+
+
+  app.use('/auth/facebook', require('./facebook_auth/routes'));
+
+
 	app.route('/*')
 		.get(function (req, res) {
 			res.sendFile(path.resolve(app.get('appPath') + '/index.html'));

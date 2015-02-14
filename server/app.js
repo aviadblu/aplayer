@@ -36,8 +36,7 @@ var server = require('http').createServer(app);
 config.app = app;
 
 
-
-
+require('./facebook_auth');
 
 
 var io = require('socket.io')(server);

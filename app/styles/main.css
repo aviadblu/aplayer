@@ -62,12 +62,25 @@ usertop {
 
 .login {
   display:block;
-  height:38px;
-  width:35px;
-  background-image:url(../images/login.png);
+  height:40px;
+  width:177px;
+  background-image:url(../images/facebook-login.png);
   background-position:center;
   background-size:100%;
-  margin:10px 15px 0px 15px;
+  margin:5px 0px 0px 15px;
+}
+
+.loggedIn {
+  display:block;
+  color:#fff;
+}
+
+.loggedIn,
+.loggedIn:hover,
+.loggedIn:focus,
+.loggedIn:active{
+  color:#fff;
+  text-decoration: none;
 }
 
 .user_data {

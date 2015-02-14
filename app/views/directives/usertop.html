@@ -1,8 +1,20 @@
 
-<div ng-show="principal.isAuthenticated()" class="user_data">
-   <img ng-src="{{user_data.image}}" alt="" class="img-circle">
-   <span ng-bind="user_data.name"></span>
+<div ng-show="auth.isLoggedIn()" class="user_data">
+  <span class="dropdown" dropdown on-toggle="toggled(open)">
+    <a href="javascript:void(0)" class="dropdown-toggle loggedIn" dropdown-toggle>
+      <img ng-src="{{user_data.image}}" alt="" class="img-circle">
+      <span ng-bind="user_data.name"></span>
+    </a>
+    <ul class="dropdown-menu">
+      <li>
+        <a href="javascript:void(0)" ng-click="logout()">Logout</a>
+      </li>
+    </ul>
+  </span>
 </div>
-<div ng-hide="principal.isAuthenticated()">
-  <a href="javascript:void(0)" ng-click="login()" class="login"></a>
+<div ng-hide="auth.isLoggedIn()">
+  <a href="/auth/facebook" class="login">
+
+  </a>
+
 </div>

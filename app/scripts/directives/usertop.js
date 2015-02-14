@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('aplayerApp')
-  .directive('usertop', function ($http, $state, principal) {
+  .directive('usertop', function ($http, $state, principal, Auth) {
     return {
       restrict: 'E',
       transclude: false,
@@ -15,25 +15,23 @@ angular.module('aplayerApp')
       controller: function ($scope, $element, $attrs) {
 
 
-        $scope.principal = principal;
+        $scope.auth = Auth;
 
 
-
-        if(principal.isAuthenticated()) {
-          principal.identity()
-          .then(function(data){
-              $scope.user_data = data.user_data;
+        principal.identity()
+          .then(function (data) {
+            $scope.user_data = data.user_data;
           });
-        }
 
-        // $scope.login = function() {
-        //
-        //   principal.identity()
-        //   .then(function(data){
-        //       $scope.user_data = data.user_data;
-        //   });
-        //
-        // }
+
+        $scope.logout = function () {
+          Auth.logout();
+          principal.identity()
+            .then(function (data) {
+              $scope.user_data = data.user_data;
+            });
+
+        }
 
       }
     };
