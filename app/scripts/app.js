@@ -11,9 +11,11 @@
 angular
   .module('aplayerApp', [
     'ui.router',
+    'ui.bootstrap',
     'ngAudio',
     'auth_service',
-    'ui.bootstrap'
+    'server',
+    'client'
   ])
   .factory('principal', ['$q', '$http', '$timeout',
     function($q, $http, $timeout) {
@@ -114,7 +116,15 @@ angular
   .run(['$rootScope', '$state', '$stateParams', 'authorization', 'principal', function($rootScope, $state, $stateParams, authorization, principal) {
     $rootScope.$state = $state;
     $rootScope.$stateParams = $stateParams;
+    $rootScope.intervals = [];
+
+
     $rootScope.$on('$stateChangeSuccess', function(event, toState) {
+
+      // clear all intervals:
+      for(var i in $rootScope.intervals) {
+        clearInterval($rootScope.intervals[i]);
+      }
 
       event.targetScope.$watch('$viewContentLoaded', function () {
 
@@ -145,7 +155,10 @@ angular
 
   .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', function($stateProvider, $urlRouterProvider, $httpProvider) {
 
-
+    var rolesGroup = {
+      all: ['Guest','User'],
+      loggedIn: ['User']
+    };
 
 
     $urlRouterProvider.otherwise(function() {
@@ -173,24 +186,18 @@ angular
         abstract: true,
         url: '/server',
         templateUrl: 'views/app.html',
-        resolve: {
-          authorize: ['authorization',
-            function(authorization) {
-              console.log("~~~~~~~~~~")
-
-              return authorization.authorize();
-            }
-          ]
+        data: {
+          roles: rolesGroup.loggedIn
         }
       })
       //player
       .state('server.player', {
-        url: '/player',
+        url: '/player/:server_id',
         controller: 'PlayerCtrl',
         templateUrl: 'views/player.html',
         data: {
-          roles: ['User']
-        },
+          roles: rolesGroup.loggedIn
+        }
       })
 
       .state('app', {
@@ -202,14 +209,28 @@ angular
       .state('app.home', {
         url: '/home',
         controller: 'HomeCtrl',
-        templateUrl: 'views/home.html'
+        templateUrl: 'views/home.html',
+        data: {
+          roles: rolesGroup.all
+        }
       })
       //client
       .state('app.client', {
-        url: '/client',
+        url: '/client/:server_id',
         controller: 'ClientCtrl',
-        templateUrl: 'views/clientView.html'
+        templateUrl: 'views/clientView.html',
+        data: {
+          roles: rolesGroup.all
+        }
       })
+      .state('app.clients', {
+        url: '/clients',
+        controller: 'ClientsCtrl',
+        templateUrl: 'views/clientsView.html',
+        data: {
+          roles: rolesGroup.all
+        }
+      });
       ////////////////
 
   }]);

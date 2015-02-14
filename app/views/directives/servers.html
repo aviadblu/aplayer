@@ -1,0 +1,6 @@
+
+<div class="server" ng-repeat="server in servers" ng-click="goServer(server.id)" ng-style="getServerStyle(server.rand_no)">
+  <h2 ng-bind="server.name"></h2>
+  <p class="date" ng-bind="server.created | date"></p>
+</div>
+<br class="clr">

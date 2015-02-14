@@ -12,64 +12,42 @@
   </div>
 </div>
 
+<serverlist servers="servers" template-url="views/directives/servers.html"></serverlist>
+
+<script type="text/ng-template" id="/new_server.html">
+  <div class="server_form">
+    <h4>Create new server</h4>
+    <form ng-submit="createServer()" ng-hide="loading">
+      <div class="form-group">
+        <label for="exampleInputEmail1">Email address</label>
+        <input type="text" id="exampleInputEmail1" class="form-control" ng-model="server_form.name" required="" placeholder="Please enter a name for your music server">
+      </div>
+      <div class="form-group">
+        <div class="btn-group">
+          <label class="btn btn-primary" ng-model="server_form.private" btn-radio="0">Public</label>
+          <label class="btn btn-primary" ng-model="server_form.private" btn-radio="1">Private</label>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-warning">Create server</button>
+    </form>
+    <div class="loader" ng-show="loading">
+      Please wait...
+    </div>
+  </div>
+</script>
+
 
 <style>
-  .mode_select {
+
+  .server_form {
     width:100%;
-    max-width:300px;
-    border:0px solid #fff;
-    min-height:300px;
-    margin-top:20px
+    padding:20px;
   }
 
-  .mode_select.full {
-    max-width:600px;
+  .server_form h4 {
+    color:#000;
+    margin: 0px;
   }
 
-  h2 {
-    font-size: 24px;
-    maring:0;
-    margin-bottom:15px;
-    font-family: 'Podkova';
-    font-weight:700;
-  }
 
-  .main_icon {
-    width:280px;
-    border:2px solid #fff;
-    text-align: center;
-    float:left;
-    -webkit-border-radius: 25px;
-    border-radius: 25px;
-    height:280px;
-    background-color:#191919;
-    cursor:pointer;
-    -webkit-box-shadow: 2px 2px 6px 0 #171717;
-box-shadow: 2px 2px 6px 0 #171717;
-  }
-
-  .main_icon:hover {
-    border-color:#7ab700;
-  }
-  .main_icon:hover h2{
-    color:#7ab700;
-  }
-
-  .create_server {
-    float:left;
-  }
-
-  .create_server img {
-    width:220px;
-    height:220px;
-  }
-
-  .open_guest {
-    float:right;
-  }
-
-  .open_guest img {
-    width:220px;
-    height:220px;
-  }
 </style>

@@ -28,7 +28,8 @@ var accounts = {
               user_data: {
                 name: user.display_name,
                 image: user.photo
-              }
+              },
+              servers: user.servers
             };
             return res.send(ui_user);
           }

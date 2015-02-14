@@ -1,7 +1,7 @@
 var config = require('../../config/environment');
 var walk    = require('walk');
 var path = require('path');
-var sync_data = require('./sync_data');
+var sync_data = require('./../client/sync_data');
 
 var songs = {
   list: function(req, res) {

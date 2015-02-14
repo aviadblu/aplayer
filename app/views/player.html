@@ -1,4 +1,14 @@
-{{playlist}}
-<player tracks-dir="songs/1" template-url="views/directives/player.html"></player>
+
+<div class="actions_bar_top player" ng-style="getServerStyle(server_data.rand_no)">
+    <h1 ng-bind="server_data.name"></h1>
+
+
+  <div class="btn-group active_not_active">
+    <label class="btn btn-success" ng-model="server_data.active" ng-click="updateServer()" btn-radio="1">Server Active</label>
+    <label class="btn btn-warning" ng-model="server_data.active" ng-click="updateServer()" btn-radio="0">Server Not Active</label>
+  </div>
+</div>
+
+<player server-id="{{server_id}}" template-url="views/directives/player.html"></player>
 
 

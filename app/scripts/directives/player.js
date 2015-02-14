@@ -1,19 +1,44 @@
 'use strict';
 
 angular.module('aplayerApp')
-  .directive('player', function ($http, ngAudio) {
+  .directive('player', function ($http, $rootScope, ngAudio, principal) {
     return {
       restrict: 'E',
       transclude: false,
       scope: {
         templateUrl: '@',
-        tracksDir: "@"
+        serverId: "@"
       },
       template: "<div ng-include='templateUrl'></div>",
       link: function (scope, element, attr, ctrl, transclude) {
 
       },
       controller: function ($scope, $element, $attrs) {
+
+        var serverId = null;
+        var init = function() {
+          var servers;
+          principal.identity()
+            .then(function (data) {
+              servers = data.servers;
+              console.log(servers);
+              for(var i in servers) {
+                if(servers[i].id == $scope.serverId) {
+                  serverId = $scope.serverId;
+                }
+              }
+
+              if(serverId) {
+                loadTrucks("songs/1");
+                initSocket();
+                var intervalStart = new Date().getTime();
+                $rootScope.intervals[intervalStart] = setInterval(updateServer,2500);
+
+              }
+
+            });
+        };
+
         $scope.setMarks = function(_audio) {
           var marks = 6;
           setTimeout(function(){
@@ -177,12 +202,14 @@ angular.module('aplayerApp')
             });
         };
 
-        loadTrucks($scope.tracksDir);
+
 
 
         $scope.loadMore = function() {
           loadTrucks("songs2");
         };
+
+
 
 
 
@@ -235,14 +262,14 @@ angular.module('aplayerApp')
 
 
         var socket;
-        var uid = 87;
+
         var initSocket = function() {
           socket = io.connect("localhost:3000", {reconnect: true});
           socket.on('connect', function(socket) {
             console.log('Connected!');
           });
           var line = 0;
-          socket.on(uid, function (data) {
+          socket.on(serverId, function (data) {
             console.log(data);
             var audio = ngAudio.load(data.song.path);
 
@@ -254,7 +281,7 @@ angular.module('aplayerApp')
           });
         };
 
-        initSocket();
+
 
 
         // update server on list change
@@ -277,15 +304,15 @@ angular.module('aplayerApp')
 
 
           $http.post('/api/songs/update_state',{
-            uid: uid,
+            uid: serverId,
             tracks: tracks,
             trackIndex: $scope.trackIndex
           });
         };
 
 
-        setInterval(updateServer,2500);
 
+        init();
       }
   };
 })

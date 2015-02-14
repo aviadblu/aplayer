@@ -6,7 +6,8 @@ angular.module('aplayerApp')
       restrict: 'E',
       transclude: false,
       scope: {
-        templateUrl: '@'
+        templateUrl: '@',
+        serverId: '@'
       },
       template: "<div ng-include='templateUrl'></div>",
       link: function (scope, element, attr, ctrl, transclude) {
@@ -15,12 +16,9 @@ angular.module('aplayerApp')
       controller: function ($scope, $element, $attrs) {
 
         var socket;
-        var uid = 87;
+        var uid = $scope.serverId;
         var initSocket = function() {
           socket = io.connect("localhost:3000", {reconnect: true});
-          socket.on('connect', function(socket) {
-            console.log('Connected!');
-          });
           var line = 0;
           socket.on(uid + "_client", function (data) {
             console.log(data);

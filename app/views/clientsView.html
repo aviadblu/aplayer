@@ -1,0 +1,9 @@
+<div class="servers_client_list">
+  <div class="server" ng-repeat="server in servers" ng-click="goClient(server.id)" ng-style="getServerStyle(server.rand_no)">
+    <h2 ng-bind="server.name"></h2>
+    <div class="user">
+      <img ng-src="{{server.user.photo}}" > <span ng-bind="server.user.name"></span>
+    </div>
+  </div>
+  <br class="clr">
+</div>

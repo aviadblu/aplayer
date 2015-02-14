@@ -47,6 +47,11 @@ appSocket.install({ io: io, appContext: appContext });
 require('./config/express')(app);
 require('./routes')(app);
 
+// open clients listener:
+var client_ctrl = require('./api/client/client.controller');
+client_ctrl.fetchClients();
+/////////////////////////
+
 // Start server
 
 
@@ -60,4 +65,4 @@ if (!module.parent) {
 }
 
 // Expose app
-exports = module.exports = app;
+var exports = module.exports = app;
