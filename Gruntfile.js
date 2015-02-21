@@ -302,7 +302,7 @@ module.exports = function (grunt) {
         'compass'
       ],
       dist: [
-        //'coffee',
+        'coffee',
         //'compass:dist',
         'imagemin',
         //'svgmin',
