@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('aplayerApp')
-  .directive('clientplayer', function ($http, ngAudio) {
+  .directive('clientplayer', ['$http','ngAudio',function ($http, ngAudio) {
     return {
       restrict: 'E',
       transclude: false,
@@ -18,10 +18,9 @@ angular.module('aplayerApp')
         var socket;
         var uid = $scope.serverId;
         var initSocket = function() {
-          socket = io.connect("localhost:3000", {reconnect: true});
+          socket = io.connect("localhost:4000", {reconnect: true});
           var line = 0;
           socket.on(uid + "_client", function (data) {
-            console.log(data);
             $scope.safeApply(function(){
               $scope.tracks = data.tracks;
               $scope.trackIndex = data.trackIndex;
@@ -46,5 +45,5 @@ angular.module('aplayerApp')
 
       }
   };
-})
+}])
 ;

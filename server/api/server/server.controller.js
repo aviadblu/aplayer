@@ -1,6 +1,7 @@
 var config = require('../../config/environment');
 var path = require('path');
 var serverServices = require("./services");
+var sync_data = require('./../client/sync_data');
 
 var server_ctrl = {
   create: function (req, res) {
@@ -16,7 +17,7 @@ var server_ctrl = {
   getData: function(req, res) {
     serverServices.getServer(req.query, function (data) {
       if(data)
-        res.send(data)
+        res.send(data);
       else
         res.status(400).send("server not found!");
     });
@@ -29,6 +30,17 @@ var server_ctrl = {
     serverServices.updateServer(accessToken, req.body, function (data) {
         res.send(data)
     });
+  },
+  sendSuggestion: function(req, res) {
+    var server_id = req.body.server_id;
+
+    console.log(server_id + " client: pick song " + req.body.song.name);
+
+    sync_data.emit(server_id, {
+      song: req.body.song
+    });
+
+    return res.send({status:"ok"});
   }
 };
 

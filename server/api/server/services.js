@@ -20,7 +20,8 @@ var serverServices = {
           created: new Date().getTime(),
           "private": server_data.private,
           name: server_data.name,
-          active: 0
+          active: 0,
+          tracks: []
         };
 
         user.child("servers").push(new_server);
@@ -56,7 +57,8 @@ var serverServices = {
               user: {
                 name: data[u].display_name,
                 photo: data[u].photo
-              }
+              },
+              tracks: data[u].servers[s].tracks
             };
             return callback(server_data);
           }
@@ -73,6 +75,7 @@ var serverServices = {
   updateServer: function(accessToken, request, callback) {
     var server_id = request.server_id;
     var new_data = request.server_data;
+
 
     var user = accounts_db.child(accessToken);
     user.once("value", function(data) {
@@ -91,8 +94,6 @@ var serverServices = {
 
         for(var s in servers) {
           if(servers[s].id == server_id) {
-            console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+++++++");
-            console.log(s);
             servers_db.child(s).update(new_data, function () {
               callback();
               return;

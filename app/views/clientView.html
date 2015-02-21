@@ -1,3 +1,41 @@
 <clientplayer server-id="{{server_id}}" template-url="views/directives/clientplayer.html"></clientplayer>
 
-<clientpicksong tracks-dir="songs/2" template-url="views/directives/clientpicksong.html"></clientpicksong>
+<div class="search">
+  <form class="form-inline" ng-submit="serach()">
+    <div class="form-group song_key">
+      <label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
+      <div class="input-group">
+
+        <input type="text" ng-model="key" class="form-control" id="exampleInputAmount" placeholder="Search song">
+
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+</div>
+
+
+
+<div class="song_result" ng-repeat="res in results">
+  <button type="button" class="btn btn-primary btn-md btn-block" ng-bind="res.snippet.title" ng-click="suggest($index)"></button>
+</div>
+
+<script type="text/ng-template" id="/suggest.html">
+  <div class="playlists_wrapper player_modal">
+    <h4>
+      Suggest song
+    </h4>
+
+    <div class="song_thumb">
+      <img ng-src="{{song.snippet.thumbnails.default.url}}" />
+      <span ng-bind="song.snippet.title"></span>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn btn-default" ng-click="close()">Cancel</button>
+      <button type="button" class="btn btn-info" ng-click="sendSuggestion()">Send suggestion</button>
+    </div>
+  </div>
+</script>
+
+

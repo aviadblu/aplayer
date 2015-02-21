@@ -58,7 +58,7 @@ client_ctrl.fetchClients();
 
 if (!module.parent) {
   server.listen(config.port, function () {
-    console.log('Express server listening on %d, in %s mode, client is%s minified', config.port, app.get('env'), (config.client_minified == "1" ? "" : " not"));
+    console.log('Express server listening on %d, in %s mode, client is%s minified', config.port, config.env, (config.client_minified == "1" ? "" : " not"));
   });
 } else {
   module.exports = app;

@@ -8,7 +8,7 @@
  * Controller of the aplayerApp
  */
 angular.module('aplayerApp')
-  .controller('AuthCtrl', function ($scope,$state,$stateParams,Auth) {
+  .controller('AuthCtrl', ['$scope','$state','$stateParams','Auth', function ($scope,$state,$stateParams,Auth) {
 
     var accessToken = Auth.getAccessTokenFromUrl($stateParams);
     if (accessToken) {
@@ -21,7 +21,7 @@ angular.module('aplayerApp')
 
 
 
-  });
+  }]);
 
 
 

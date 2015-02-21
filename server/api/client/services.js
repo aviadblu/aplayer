@@ -11,9 +11,13 @@ var clientServices = {
       if (!data)
         return;
 
+
+
       for (var u in data) {
         for (s in data[u].servers) {
           var server_Id = data[u].servers[s].id;
+
+
 
           if (data[u].servers[s].active == 1 && data[u].servers[s].private == 0) {
             public_servers[server_Id] = {
@@ -32,8 +36,8 @@ var clientServices = {
 
         }
       }
-      console.log("+++++++ public servers ++++++++")
-      console.log(public_servers);
+      //console.log("+++++++ public servers ++++++++")
+      //console.log(public_servers);
       sync_data.emit("servers",public_servers);
     });
   }

@@ -29,6 +29,8 @@ module.exports = function (app) {
   app.use('/api/songs', require('./api/songs'));
   app.use('/api/server', require('./api/server'));
   app.use('/api/client', require('./api/client'));
+  app.use('/api/youtube', require('./api/youtube'));
+  app.use('/api/user', require('./api/user'));
 	// All other routes should redirect to the index.html
 
 

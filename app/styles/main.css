@@ -109,20 +109,20 @@ player .table_wrapper {
   margin:20px 0px;
 }
 
-table {
+table.player_songs {
   border-collapse: collapse;
   width:100%;
   background-color:#191919;
 }
 
-th {
+table.player_songs th {
   text-transform: uppercase;
   color:#555555;
   font-weight: normal;
 }
 
 
-td, th {
+table.player_songs td, table.player_songs th {
   padding:5px;
   text-align: left;
   border-bottom:1px solid #272727;
@@ -131,15 +131,15 @@ td, th {
   padding:0px 10px;
 }
 
-td {
+table.player_songs td {
   cursor:pointer;
 }
 
-.no_actions td {
+table.player_songs.no_actions td {
   cursor: default;
 }
 
-td.status_icon {
+table.player_songs td.status_icon {
   width:50px;
   background-image: url(../images/wait.png);
   background-repeat: no-repeat;
@@ -147,18 +147,30 @@ td.status_icon {
   background-position: center;
 }
 
-tr.playing td.status_icon {
+table.player_songs tr.playing td.status_icon {
   background-image: url(../images/sound.png);
 }
 
-tr.selected {
+table.player_songs tr.selected {
   background-color:#272727;
   cursor:default;
 }
 
-tr.selected td {
+table.player_songs tr.selected td {
   cursor:default;
   color:#7ab700;
+}
+
+.player_songs .song_action{
+  color: #fff;
+  text-decoration: none;
+  display:block;
+  width:30px;
+  text-align: center;
+}
+
+.player_songs .song_action:hover {
+  text-decoration: none;
 }
 
 .actions_bar {
@@ -470,11 +482,96 @@ h2 {
   line-height:60px;
   text-shadow: 1px 1px 1px #999999;
   float:left;
+  margin-right:20px;
 }
 
 .actions_bar_top.player .active_not_active {
   margin-top:14px;
   float:right;
+}
+
+.youtubePlayer_wrap {
+  display:none;
+}
+
+.song_result {
+  margin:15px 0px;
+}
+
+.playlists_wrapper {
+  width:100%;
+  padding:20px;
+  color:#000;
+}
+
+.new_playlist_button {
+  float:right;
+  display:inline-block;
+}
+
+.song_key {
+  width:70% !important;
+  display: inline-block !important;
+}
+
+.song_key .input-group {
+  width:100%;
+}
+
+.song_key input {
+  width:100% !important;
+}
+
+.playlists_wrapper h4 {
+  color:#000;
+  margin: 0px;
+  margin-bottom:20px;
+  border-bottom:1px solid #eee;
+  height:40px;
+  line-height:40px;
+}
+
+.playlists_wrapper .results {
+  margin:20px 0px;
+}
+
+.playlist_songs {
+  margin-bottom:30px;
+}
+
+.playlist_songs .song {
+  margin:4px;
+}
+
+.player_modal .actions {
+  margin-top:20px;
+  height:45px;
+  line-height: 45px;
+  padding:10px 0px;
+  border-top:1px solid #eee;
+  text-align:center;
+}
+
+.playlist_row {
+  cursor:pointer;
+}
+
+.playlist_row:hover {
+  background-color: #272728;
+  color:#fff;
+}
+
+
+.song_thumb {
+  height:80px;
+
+}
+
+.song_thumb img {
+  display:block;
+  float:left;
+  height:80px;
+  margin-right:20px;
 }
 
 

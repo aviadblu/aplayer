@@ -2,7 +2,7 @@ var cli = require("cli");
 
 cli.parse({
 	port   : ['p', 'Port','number'],
-	env    : ['e', 'Environment (staging | development | production)', 'string', 'development'],
+	env    : ['e', 'Environment (staging | development | production)', 'string', -1],
 	mini   : ['m', 'Client is minified (if set -m client is not minified)'],
 	debug  : ['s', 'Print to console and stop on error']
 });
@@ -11,9 +11,12 @@ var cli_env;
 
 cli.main(function(args, options) {
 
-	cli_env = {
-		env     : options.env
-	};
+  cli_env = {};
+
+
+  if(options.env != -1) {
+    cli_env.env = options.env;
+  }
 
 	if(options.port)
 		cli_env.port = options.port;

@@ -10,16 +10,15 @@ function requiredProcessEnv(name) {
   return process.env[name];
 }
 
-// add cli options
 var cli_env = require('../cli');
+var process_env = require('../process_env');
 
-
-
+var external_env = _.merge(process_env, cli_env);
 
 // All configurations will extend these options
 // ============================================
 var all = {
-  env: cli_env.env,
+  env: external_env.env || "production",
 
   // Root path of server
   root: path.normalize(__dirname + '/../../..'),
@@ -29,10 +28,8 @@ var all = {
 
 };
 
-var env_defaults = require('./' + cli_env.env + '.js');
+var env_defaults = require('./' + all.env + '.js');
 
-var process_env = require('../process_env');
-
-var config = _.merge(all, env_defaults, process_env, cli_env);
+var config = _.merge(all, env_defaults, external_env);
 
 module.exports = config;

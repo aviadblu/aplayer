@@ -2,9 +2,16 @@ var config = require('../../config/environment');
 var walk    = require('walk');
 var path = require('path');
 var sync_data = require('./../client/sync_data');
+var server_services = require("../server/services");
+
 
 var songs = {
-  list: function(req, res) {
+
+  list: function(req, res){
+
+  },
+
+  local_list: function(req, res) {
         var supported_ext = ["mp3"];
 
         var files   = [];
@@ -41,7 +48,21 @@ var songs = {
 
     update_state: function(req, res) {
       var uid = req.body.uid;
-      console.log(uid + ": update state");
+      //console.log(uid + ": update state");
+
+      var accessToken = req.get('x-access-token');
+      if (!accessToken) {
+        return res.status(400).send("Please log in!");
+      }
+
+
+      if(req.body.update_db) {
+        server_services.updateServer(accessToken, {server_id: uid, server_data: {tracks: req.body.tracks}}, function(){
+
+        });
+      }
+
+
 
       sync_data.emit(uid + "_client",{
         tracks: req.body.tracks,

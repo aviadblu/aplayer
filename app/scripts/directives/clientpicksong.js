@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('aplayerApp')
-  .directive('clientpicksong', function ($http, ngAudio) {
+  .directive('clientpicksong', ['$http','ngAudio',function ($http, ngAudio) {
     return {
       restrict: 'E',
       transclude: false,
@@ -49,5 +49,5 @@ angular.module('aplayerApp')
 
       }
     };
-  })
+  }]);
 ;

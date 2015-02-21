@@ -8,7 +8,7 @@
  * Controller of the aplayerApp
  */
 angular.module('aplayerApp')
-  .controller('ClientsCtrl', function ($scope,$state,$stateParams,Client) {
+  .controller('ClientsCtrl', ['$scope','$state','$stateParams','Client', function ($scope,$state,$stateParams,Client) {
 
 
     $scope.getServerStyle = function(i){
@@ -19,7 +19,7 @@ angular.module('aplayerApp')
 
     var socket;
     var initSocket = function() {
-      socket = io.connect("localhost:3000", {reconnect: true});
+      socket = io.connect("localhost:4000", {reconnect: true});
       socket.on("servers", function (data) {
         $scope.servers = data;
         $scope.$apply();
@@ -32,7 +32,7 @@ angular.module('aplayerApp')
     $scope.goClient = function(server_id) {
       $state.go("app.client",{server_id: server_id});
     };
-  });
+  }]);
 
 
 

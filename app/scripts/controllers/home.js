@@ -8,7 +8,7 @@
  * Controller of the aplayerApp
  */
 angular.module('aplayerApp')
-  .controller('HomeCtrl', function ($scope, $http, $state, Auth, $modal, principal) {
+  .controller('HomeCtrl', ['$scope','$http','$state','Auth','$modal','principal', function ($scope, $http, $state, Auth, $modal, principal) {
 
     $scope.auth = Auth;
 
@@ -40,8 +40,8 @@ angular.module('aplayerApp')
       });
 
 
-  })
-  .controller('NewServerCtrl', function ($scope, $modalInstance, Server) {
+  }])
+  .controller('NewServerCtrl', ['$scope','$modalInstance','Server', function ($scope, $modalInstance, Server) {
     $scope.server_form = {
       private: 0
     };
@@ -60,4 +60,4 @@ angular.module('aplayerApp')
           });
       }
     };
-  });
+  }]);

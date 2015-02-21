@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('aplayerApp')
-  .directive('serverlist', function ($http, $state) {
+  .directive('serverlist', ['$http','$state',function ($http, $state) {
     return {
       restrict: 'E',
       transclude: false,
@@ -25,5 +25,5 @@ angular.module('aplayerApp')
         };
       }
     };
-  })
+  }])
 ;

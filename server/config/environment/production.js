@@ -7,8 +7,12 @@ var path = require('path');
 // ==================================
 module.exports = {
 
-  port: 3000,
+  port: 80,
 
-  client_minified: '1'
+  client_minified: '1',
+
+  facebookAuth: {
+    callbackURL: "http://www.jukebox-player.com/auth/facebook/callback"
+  }
 
 };

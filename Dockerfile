@@ -11,9 +11,13 @@ RUN npm install bower -g
 WORKDIR /opt/aplayer
 COPY . /opt/aplayer
 
-RUN npm install
-RUN bower install --allow-root
+RUN sudo npm install
+RUN sudo bower install --allow-root
 
-EXPOSE 3000
+RUN npm install -g grunt-cli
+
+RUN grunt build
+
+EXPOSE 80
 
 CMD node ./server/app.js

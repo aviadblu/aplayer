@@ -3,16 +3,13 @@
   'use strict';
   angular
     .module('client',[])
-    .service('Client', Client);
+    .service('Client', ['$http', function($http){
 
+      this.fetchAll = function() {
+        console.log("fetching all")
+        return $http.get("/api/client/fetchAll");
+      };
 
-  function Client($http) {
-    this.fetchAll = function() {
-      return $http.get("/api/client/fetchAll");
-    };
-
-  };
-
-
+    }]);
 
 }).call(this);

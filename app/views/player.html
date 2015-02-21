@@ -1,14 +1,74 @@
 
-<div class="actions_bar_top player" ng-style="getServerStyle(server_data.rand_no)">
+<div>
+
+  <div class="actions_bar_top player" ng-style="getServerStyle(server_data.rand_no)">
     <h1 ng-bind="server_data.name"></h1>
 
+    <button type="button" class="btn btn-default" ng-click="loadPlaylist()">Load Playlist</button>
 
-  <div class="btn-group active_not_active">
-    <label class="btn btn-success" ng-model="server_data.active" ng-click="updateServer()" btn-radio="1">Server Active</label>
-    <label class="btn btn-warning" ng-model="server_data.active" ng-click="updateServer()" btn-radio="0">Server Not Active</label>
+    <div class="btn-group active_not_active">
+      <label class="btn btn-success" ng-model="server_data.active" ng-click="updateServer()" btn-radio="1">Server Active</label>
+      <label class="btn btn-warning" ng-model="server_data.active" ng-click="updateServer()" btn-radio="0">Server Not Active</label>
+    </div>
   </div>
+
+  <player></player>
+
 </div>
 
-<player server-id="{{server_id}}" template-url="views/directives/player.html"></player>
+<script type="text/ng-template" id="/playlists.html">
+  <div class="playlists_wrapper player_modal">
+    <h4>
+        Playlists
+        <button type="button" class="btn new_playlist_button" ng-class="{'btn-primary':new_playlist,'btn-success':!new_playlist }" ng-click="new_playlist=!new_playlist">
+        <span ng-hide="new_playlist">+ New Playlist</span>
+        <span ng-show="new_playlist">Back</span>
+    </button>
+    </h4>
+
+    <div class="new_playlist" ng-show="new_playlist">
+      <form class="form-inline" ng-submit="searchSong()" ng-hide="loading">
+        <div class="form-group song_key">
+          <input type="text" class="form-control" ng-model="key" required="" placeholder="Search for a song">
+        </div>
+        <button type="submit" class="btn btn-default">Search</button>
+      </form>
+
+      <div class="results" ng-hide="loading">
+        <button ng-disabled="song.used" ng-repeat="song in results" type="button" class="btn btn-primary btn-md btn-block" ng-bind="song.snippet.title" ng-click="addSong($index)"></button>
+      </div>
+
+      <hr>
+
+      <div class="playlist_songs" ng-hide="loading">
+        <button type="button" class="btn btn-default btn-xs song" ng-repeat="song in playlist.songs" ng-bind="song.name" ng-click="removeSong($index)"></button>
+      </div>
+      <button ng-hide="loading || playlist.songs.length<1" type="button" ng-click="createPlaylist()" class="btn btn-warning">Create playlist (<span ng-bind="playlist.songs.length"></span>)</button>
+
+      <div class="loader" ng-show="loading">
+        Please wait...
+      </div>
+    </div>
+
+    <div ng-hide="new_playlist">
+      <table class="table">
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Songs</th>
+        </tr>
+        <tr ng-repeat="(id, playlist) in playlists" class="playlist_row" ng-click="selectPlaylist(id)">
+          <td ng-bind="$index+1"></td>
+          <td ng-bind="playlist.name"></td>
+          <td ng-bind="playlist.songs.length"></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn btn-default" ng-click="close()">Cancel</button>
+    </div>
+  </div>
 
 
+</script>

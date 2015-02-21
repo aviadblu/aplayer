@@ -8,8 +8,8 @@
  * Controller of the aplayerApp
  */
 angular.module('aplayerApp')
-  .controller('LoginCtrl', function ($scope, $http) {
+  .controller('LoginCtrl', ['$scope','$http',function ($scope, $http) {
 
 
 
-  });
+  }]);

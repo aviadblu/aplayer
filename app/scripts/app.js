@@ -12,10 +12,13 @@ angular
   .module('aplayerApp', [
     'ui.router',
     'ui.bootstrap',
+    'youtube-embed',
     'ngAudio',
     'auth_service',
     'server',
-    'client'
+    'client',
+    'youtube_service',
+    'user'
   ])
   .factory('principal', ['$q', '$http', '$timeout',
     function($q, $http, $timeout) {
@@ -123,6 +126,7 @@ angular
 
       // clear all intervals:
       for(var i in $rootScope.intervals) {
+        //console.log("clear interval: " + i);
         clearInterval($rootScope.intervals[i]);
       }
 
@@ -210,6 +214,14 @@ angular
         url: '/home',
         controller: 'HomeCtrl',
         templateUrl: 'views/home.html',
+        data: {
+          roles: rolesGroup.all
+        }
+      })
+      .state('app.youtube', {
+        url: '/youtube',
+        controller: 'YoutubeCtrl',
+        templateUrl: 'views/youtube.html',
         data: {
           roles: rolesGroup.all
         }

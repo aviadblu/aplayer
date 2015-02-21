@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('aplayerApp')
-  .directive('usertop', function ($http, $state, principal, Auth) {
+  .directive('usertop', ['$http','$state','principal','Auth',function ($http, $state, principal, Auth) {
     return {
       restrict: 'E',
       transclude: false,
@@ -35,5 +35,5 @@ angular.module('aplayerApp')
 
       }
     };
-  })
+  }])
 ;

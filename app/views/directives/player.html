@@ -1,14 +1,17 @@
+
 <div class="table_wrapper">
-  <table>
+  <table class="player_songs">
     <tr>
       <th></th>
       <th>Name</th>
       <th>Length</th>
+      <th></th>
     </tr>
-    <tr ng-repeat="song in tracks" ng-click="setTrack($index)" ng-class="{selected:trackIndex==$index,playing:song.audio.data.playing}">
-      <td class="status_icon"></td>
-      <td ng-bind="song.name"></td>
-      <td><span ng-show="song.audio.data.on_dock" ng-bind="dur2len(song.audio.currentTime)"></span><span ng-show="song.audio.data.on_dock">/</span><span ng-bind="dur2len(song.audio.duration)"></span></td>
+    <tr ng-repeat="track in tracks"  ng-class="{selected:currTrack==$index,playing:track.playing}">
+      <td class="status_icon" ng-click="actions.setTrack($index)"></td>
+      <td ng-bind="track.name" ng-click="actions.setTrack($index)"></td>
+      <td ng-click="actions.setTrack($index)"><span ng-show="$index==currTrack" ng-bind="track.currTime"></span><span ng-show="$index==currTrack">/</span><span ng-bind="track.extra_data.duration.text"></span></td>
+      <td><a class="song_action" href="javascript:;" ng-click="actions.removeSong($index)">--</a></td>
     </tr>
   </table>
 </div>
@@ -17,30 +20,34 @@
   <!--<button ng-click='_audio.actions.mute()'>Mute</button>-->
 
   <div class="actions_bar">
-    <div class="player_button prev" ng-click="prevTrack()"></div>
-    <div class="player_button play" ng-click='_audio.actions.play_pause()' ng-class="{pause:_audio.data.pause}"></div>
-    <div class="player_button next" ng-click="nextTrack()"></div>
+    <div class="player_button prev" ng-click="actions.prevTrack()"></div>
+    <div class="player_button play" ng-click='actions.play_pause()' ng-class="{pause:tracks[currTrack].playing}"></div>
+    <div class="player_button next" ng-click="actions.nextTrack()"></div>
   </div>
 
-  <div class="volume">
-    <label>Volume</label>
-    <input class='form-control' type=range min=0 max=1 step=0.01 ng-model='_audio.volume'>
-  </div>
+  <!--<div class="volume">-->
+    <!--<label>Volume</label>-->
+    <!--<input class='form-control' type=range min=0 max=1 step=0.01 ng-model='_audio.volume'>-->
+  <!--</div>-->
 
 
-  <div class="progress-line">
-    <div class="prgress-bg">
-      <div class="timeline-time" ng-bind="dur2len(_audio.currentTime)">00:00:00</div>
-      <div class="slider-wrap">
-        <input class="timeline" type="range"
-               ng-model="_audio.currentTime" step="0.01" name="points" min="0" max="{{_audio.duration}}"><br>
-        <div class="scale-marks" id="frame_marks"></div>
 
-      </div>
-    </div>
-  </div>
+  <!--<div class="progress-line">-->
+    <!--<div class="prgress-bg">-->
+      <!--<div class="timeline-time" ng-bind="dur2len(_audio.currentTime)">00:00:00</div>-->
+      <!--<div class="slider-wrap">-->
+        <!--<input class="timeline" type="range"-->
+               <!--ng-model="_audio.currentTime" step="0.01" name="points" min="0" max="{{_audio.duration}}"><br>-->
+        <!--<div class="scale-marks" id="frame_marks"></div>-->
 
-<!--<button ng-click="loadMore()">more</button>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
+
+<div class="youtubePlayer_wrap">
+  <youtube-video video-id="tracks[currTrack].id" player="player" ng-init="actions.init()"></youtube-video>
+</div>
+
 
 
 
