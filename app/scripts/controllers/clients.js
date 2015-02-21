@@ -19,7 +19,7 @@ angular.module('aplayerApp')
 
     var socket;
     var initSocket = function() {
-      socket = io.connect("localhost:4000", {reconnect: true});
+      socket = io();
       socket.on("servers", function (data) {
         $scope.servers = data;
         $scope.$apply();

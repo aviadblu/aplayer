@@ -266,7 +266,7 @@ angular.module('aplayerApp')
         var socket;
 
         var initSocket = function() {
-          socket = io.connect("localhost:3000", {reconnect: true});
+          socket = io();
           socket.on('connect', function(socket) {
             console.log('Connected!');
           });

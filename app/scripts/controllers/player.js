@@ -103,10 +103,9 @@ angular.module('aplayerApp')
 
     var initSocket = function() {
 
-      socket = io.connect("localhost:4000", {reconnect: true});
+      socket = io();
       var line = 0;
       socket.on($scope.server_id, function (data) {
-        console.log(data.song)
         addSongs([data.song]);
       });
     };

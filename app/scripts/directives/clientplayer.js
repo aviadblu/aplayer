@@ -18,7 +18,7 @@ angular.module('aplayerApp')
         var socket;
         var uid = $scope.serverId;
         var initSocket = function() {
-          socket = io.connect("localhost:4000", {reconnect: true});
+          socket = io();
           var line = 0;
           socket.on(uid + "_client", function (data) {
             $scope.safeApply(function(){
