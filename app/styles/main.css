@@ -40,13 +40,25 @@ header {
 
 .logo {
   display:block;
-  width:210px;
+  width:300px;
   height:45px;
   cursor:pointer;
   float:left;
-  background-image:url(../images/juke_player_logo_60_240.png);
+  background-image:url(../images/logo_60.png);
   background-position:center;
-  background-size:100%;
+  background-size:45px 100%;
+  background-repeat: no-repeat;
+  background-position: left center;
+  padding-left: 55px;
+  font-family: 'Podkova';
+  line-height:45px;
+  font-size:30px;
+  color:#fff;
+}
+
+.logo:hover {
+  color:#fff;
+  text-decoration: none;
 }
 
 usertop {
@@ -572,6 +584,95 @@ h2 {
   float:left;
   height:80px;
   margin-right:20px;
+}
+
+
+@media (max-width: 700px) {
+
+  .logo {
+    width:45px;
+  }
+
+  .logo .text {
+    display:none;
+  }
+
+  .user_data .user_name {
+    display:none;
+  }
+
+  .mode_select {
+    height:auto;
+    width:80%;
+    min-height: 0px;
+  }
+
+  .mode_select.full {
+    width:100%;
+  }
+
+  .mode_select .main_icon {
+    width:92%;
+    margin:0px 4%;
+    height:auto;
+  }
+
+  .mode_select.full .main_icon {
+    width:40%;
+    margin:5%;
+  }
+
+  .main_icon h2 {
+    margin:5px 0px;
+    font-size:18px;
+  }
+
+  .main_icon img {
+    width:90%;
+    height:auto;
+  }
+
+  serverlist {
+    margin-top:15px;
+  }
+
+  serverlist .server, .servers_client_list .server {
+    float:none;
+    width:92%;
+    margin:4%;
+    height:auto;
+  }
+
+  serverlist .server .user, .servers_client_list .server .user {
+    position: relative;
+  }
+
+  .actions_bar_top.player {
+    height:auto;
+    background-position: left top;
+    padding-left: 0px;
+  }
+
+  .actions_bar_top.player h1 {
+    float: none;
+    text-align: center;
+  }
+
+  .search .btn {
+    margin-bottom:25px;
+  }
+
+  .search .song_key {
+    margin-bottom:0px;
+  }
+
+}
+
+@media (max-width: 450px) {
+  .main_icon {
+    width:46%;
+    margin:2%;
+  }
 }
 
 

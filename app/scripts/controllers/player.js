@@ -139,7 +139,7 @@ angular.module('aplayerApp')
 
     loadPlaylists();
 
-    $scope.key = "עומר אדם";
+    $scope.key = "";
 
     $scope.searchSong = function() {
       if(this.key) {
