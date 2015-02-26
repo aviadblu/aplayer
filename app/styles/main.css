@@ -2,15 +2,26 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
 @import url(http://fonts.googleapis.com/css?family=Podkova:300,400,700);
 
+html {
+  padding:0;
+  margin:0;
+  height:100%;
+}
+
 body {
-  background-color: #000;
+
   color:#fff;
   font-family: 'Open Sans', Arial;
-  background-image:url(../images/bg.jpg);
-  background-position:top center;
-  background-repeat: no-repeat;
-  background-size:200%;
+  background-image: url(../images/dark_bg.jpg);
+  background-repeat: repeat;
+  height:100%;
   padding-top:80px;
+}
+
+@media (min-width: 1920px) {
+  body {
+    background-size:100%;
+  }
 }
 
 
@@ -30,12 +41,13 @@ header {
   display:block;
   height:60px;
   border-bottom:1px solid #191919;
-  background-color: #272727;
+  background-color: #000;
   width:100%;
   position:fixed;
   top:0px;
   left:0px;
   padding:5px 20px;
+  opacity: 0.8;
 }
 
 .logo {
@@ -45,7 +57,6 @@ header {
   cursor:pointer;
   float:left;
   background-image:url(../images/logo_60.png);
-  background-position:center;
   background-size:45px 100%;
   background-repeat: no-repeat;
   background-position: left center;
@@ -106,25 +117,86 @@ usertop {
 
 player {
   display: block;
-  max-width:600px;
+  width:100%;
   position: relative;
   margin:0px auto;
 }
 
-player .table_wrapper {
-  max-height:500px;
-  overflow-y:auto;
+player .table_header {
+  height: 25px;
+  max-width:600px;
+  position: relative;
+  margin:0px auto;
+  line-height:25px;
+  background-color: #191919;
 }
 
-.table_wrapper {
-  border:1px solid #191919;
-  margin:20px 0px;
+player .table_header table {
+  width: 100%;
 }
+
+player .table_header table th {
+  padding:0px 10px;
+  text-align: left;
+}
+
+player .table_wrapper {
+  max-height:330px;
+  overflow-y:auto;
+  overflow-x: hidden;
+  position: relative;
+  border:1px solid #191919;
+  margin:0px;
+  margin-bottom: 20px;
+}
+
+player .table_header.search {
+  margin-bottom: 2px;
+}
+
+player .table_header.search form {
+  display: block;
+  height:25px;
+}
+
+player .table_header.search input {
+  height:25px;
+  line-height: 25px;
+  font-size: 13px;
+  background-color: #191919;
+  padding: 3px 10px;
+  border:0px;
+  width: 100%;
+  border-bottom: 1px solid #fff;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+player .table_header.search.results {
+  height:150px;
+}
+
+player .table_header.search .result {
+  height:25px;
+  line-height:25px;
+  padding: 0px 10px;
+  font-size: 13px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+
+player .table_header.search .result:hover {
+  background-color: #272727;
+}
+
 
 table.player_songs {
   border-collapse: collapse;
   width:100%;
   background-color:#191919;
+  table-layout: fixed;
 }
 
 table.player_songs th {
@@ -348,20 +420,22 @@ serverlist {
 
 serverlist .server,
 .servers_client_list .server{
-  height:120px;
+  height:80px;
   width:120px;
   border:2px solid #fff;
   text-align: center;
   float:left;
   -webkit-border-radius: 15px;
   border-radius: 15px;
-  background-color:#191919;
+  background-color:#000;
   cursor:pointer;
   -webkit-box-shadow: 2px 2px 6px 0 #171717;
   box-shadow: 2px 2px 6px 0 #171717;
   font-family: 'Podkova';
   background-size: 100%;
   margin:8px;
+  opacity:0.8;
+  text-shadow: 1px 1px 3px #000;
 }
 
 serverlist .server .user,
@@ -439,10 +513,9 @@ h2 {
   -webkit-border-radius: 25px;
   border-radius: 25px;
   height:280px;
-  background-color:#191919;
+  background-color:#000;
   cursor:pointer;
-  -webkit-box-shadow: 2px 2px 6px 0 #171717;
-  box-shadow: 2px 2px 6px 0 #171717;
+  opacity: 0.8;
 }
 
 .main_icon:hover {
@@ -503,7 +576,7 @@ h2 {
 }
 
 .youtubePlayer_wrap {
-  display:none;
+  /*display:none;*/
 }
 
 .song_result {
@@ -514,6 +587,17 @@ h2 {
   width:100%;
   padding:20px;
   color:#000;
+}
+
+.playlists_wrapper a,
+.playlists_wrapper a:hover,
+.playlists_wrapper a:active,
+.playlists_wrapper a:focus {
+  color:#fff;
+  text-decoration: none;
+  display: block;
+  width:100%;
+  height: 100%;
 }
 
 .new_playlist_button {
@@ -668,11 +752,226 @@ h2 {
 
 }
 
+
+#player_bottom .play {
+  height:80px;
+  width:80px;
+  background-image: url(../images/play.png);
+  background-position: center;
+  background-size: 90%;
+  cursor:pointer;
+}
+
+#player_bottom .play.playing {
+  background-image: url(../images/pause.png);
+}
+
+
+
 @media (max-width: 450px) {
   .main_icon {
     width:46%;
     margin:2%;
   }
 }
+
+.player_actions_top {
+  position:fixed;
+  top: 140px;
+  height:31px;
+  width:100%;
+  line-height:30px;
+  background-color:#000;
+  opacity: 0.7;
+  padding:0px 10px;
+  border-bottom:1px solid #7ab700;
+}
+
+.player_actions_top .server_name {
+  ont-family: 'Podkova';
+  font-weight:700;
+  font-size:24px;
+  text-transform: uppercase;
+}
+
+#player_bottom i {
+  color:#7ab700;
+}
+
+#player_bottom i:hover {
+  color:#fff;
+}
+
+#player_bottom .next_prev {
+  height:40px;
+  line-height:40px;
+  text-align: center;
+}
+
+#player_bottom .next_prev i{
+  margin-top:6px;
+  cursor:pointer;
+}
+
+#player_bottom .server_image {
+  width:80pp;
+
+}
+#player_bottom .server_image img {
+  width:80px;
+  height:80px;
+  position: absolute;
+  top:0px;
+  left:0px;
+}
+
+.track_data {
+  height:40px;
+  float:left;
+  width:50%;
+  line-height:40px;
+  overflow:hidden;
+}
+
+.track_data label {
+  margin:0;
+  padding:0;
+  height:40px;
+  float:left;
+  display: inline-block;
+  margin-right:10px;
+  font-weight: 500;
+}
+
+.track_data img{
+  height:40px;
+  width:48px;
+  margin:0px;
+  margin-top:-3px;
+  margin-right:10px;
+}
+
+#player_bottom {
+  height:80px;
+  width:100%;
+  position:fixed;
+  top:60px;
+  left:0px;
+  /*background-color:#7ab700;*/
+  background-color:#000;
+  opacity: 0.7;
+  z-index:10;
+}
+
+#player_bottom table {
+  width: 100%;
+  height:100%;
+  text-shadow: 1px 1px 3px #000;
+}
+
+#player_bottom table td {
+  padding:0pp;
+}
+
+#player_bottom .tracks_data {
+  height:40px;
+  width:100%;
+}
+
+#player_bottom .progress_data {
+  height:40px;
+  line-height:40px;
+  font-size:20px;
+  width:100%;
+  background-color: #fff;
+  opacity: 0.8;
+}
+
+#player_bottom .progress_data .text {
+  position: absolute;
+  left:0px;
+  z-index:2;
+}
+
+#player_bottom .progress_data span{
+  margin:0px 10px;
+}
+
+#player_bottom .progress_data .fill {
+  background-color:#7ab700;
+  width:0%;
+  height:100%;
+  float:left;
+  opacity: 0.9;
+  -webkit-transition: all 200ms ease-out;
+  -moz-transition: all 200ms ease-out;
+  -ms-transition: all 200ms ease-out;
+  -o-transition: all 200ms ease-out;
+  transition: all 200ms ease-out;
+  z-index:1;
+}
+
+
+#player_bg {
+
+  position:fixed;
+  top:0;
+  left:0;
+  height:100%;
+  width:100%;
+  z-index:-1;
+  opacity: 0.8;
+}
+
+#player_bg img {
+  height:100%;
+  width:100%;
+}
+
+h1.list_name {
+  position:fixed;
+  top:140px;
+  left:0px;
+  font-size:40px;
+  height:40px;
+  font-family: 'Podkova';
+  font-weight:700;
+  line-height:40px;
+  text-shadow: 1px 1px 1px #999999;
+  padding:0px 20px;
+  text-transform: capitalize;
+  margin:0;
+}
+
+.track_list_bottom {
+  position: fixed;
+  bottom:0px;
+  width:100%;
+  height:120px;
+  background-color:#000;
+  opacity: 0.9;
+}
+
+
+.track_view {
+  width:132px;
+  height:112px;
+  border:0px solid #fff;
+  float:left;
+  margin:5px;
+  padding:4px;
+  cursor:pointer;
+}
+
+.track_view img {
+  width:122px;
+  height:102px;
+}
+
+.track_view.active {
+  border:1px solid #7ab700;
+  background-color:#7ab700;
+}
+
 
 

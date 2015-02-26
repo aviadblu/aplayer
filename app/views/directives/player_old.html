@@ -1,0 +1,47 @@
+<div class="table_header search" ng-class="{results:results}">
+  <form ng-submit="searchSong()">
+    <input type="text" placeholder="Search song and add to playlist" ng-model="key">
+  </form>
+  <div class="result" ng-repeat="song in results" ng-bind="song.snippet.title" ng-click="addSong($index)"></div>
+</div>
+<div class="table_header">
+  <table>
+    <tr>
+      <th style="width:30px;"></th>
+      <th>Name</th>
+      <th style="width:85px;">Length</th>
+      <th style="width:50px;"></th>
+    </tr>
+  </table>
+</div>
+<div class="table_wrapper">
+  <table class="player_songs">
+    <tr ng-repeat="track in tracks"  ng-class="{selected:currTrack==$index,playing:track.playing}">
+      <td style="width:30px;" class="status_icon" ng-click="actions.setTrack($index)"></td>
+      <td ng-bind="track.name" ng-click="actions.setTrack($index)"></td>
+      <td style="width:85px;" ng-click="actions.setTrack($index)"><span ng-show="$index==currTrack" ng-bind="track.currTime"></span><span ng-show="$index==currTrack">/</span><span ng-bind="track.extra_data.duration.text"></span></td>
+      <td style="width:50px;"><a class="song_action" href="javascript:;" ng-click="actions.removeSong($index)">--</a></td>
+    </tr>
+  </table>
+</div>
+  <!--<button ng-click='_audio.actions.play_pause()' ng-bind="_audio.data.play_label"></button>-->
+  <!--<button ng-click='_audio.actions.stop()'>Stop</button>-->
+  <!--<button ng-click='_audio.actions.mute()'>Mute</button>-->
+
+  <div class="actions_bar">
+    <div class="player_button prev" ng-click="actions.prevTrack()"></div>
+    <div class="player_button play" ng-click='actions.play_pause()' ng-class="{pause:player_data.playing}"></div>
+    <div class="player_button next" ng-click="actions.nextTrack()"></div>
+  </div>
+
+
+{{player_data}}
+
+<div class="youtubePlayer_wrap" ng-init="actions.init()">
+  <youtube-video video-id="player0_id" player="player[0]"></youtube-video>
+  <youtube-video video-id="player1_id" player="player[1]"></youtube-video>
+</div>
+
+
+
+

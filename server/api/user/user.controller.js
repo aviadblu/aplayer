@@ -35,6 +35,17 @@ var userCtrl = {
       }
 
     });
+  },
+
+  delPlaylist: function(req, res) {
+    var accessToken = req.get('x-access-token');
+    if (!accessToken) {
+      return res.status(400).send("Please log in!");
+    }
+
+    userServices.delPlaylist(accessToken, req.body.id, function () {
+        res.send({"status":"ok"});
+    });
   }
 
 

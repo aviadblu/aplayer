@@ -13,6 +13,10 @@
         return $http.get("/api/user/loadPlaylist");
       };
 
+      this.delPlaylist = function(id) {
+        return $http.post("/api/user/delPlaylist", {id:id});
+      };
+
     }]);
 
 }).call(this);

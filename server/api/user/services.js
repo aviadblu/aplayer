@@ -29,6 +29,12 @@ var userServices = {
     });
   },
 
+  delPlaylist: function(accessToken, id, callback){
+    var playlists = accounts_db.child(accessToken).child("playlists").child(id).remove(function(){
+      callback();
+    });
+  },
+
   updateSongData: function(accessToken, song_id, updated_data, callback) {
     var playlists = accounts_db.child(accessToken).child("playlists");
     playlists.once("value", function(data) {

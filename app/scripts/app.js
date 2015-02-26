@@ -13,12 +13,14 @@ angular
     'ui.router',
     'ui.bootstrap',
     'youtube-embed',
-    'ngAudio',
+    'picardy.fontawesome',
+    'ui.slimscroll',
     'auth_service',
     'server',
     'client',
     'youtube_service',
-    'user'
+    'user',
+    'player_service'
   ])
   .factory('principal', ['$q', '$http', '$timeout',
     function($q, $http, $timeout) {

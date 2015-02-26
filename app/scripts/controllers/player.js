@@ -14,6 +14,32 @@ angular.module('aplayerApp')
       console.log("down")
     };
 
+    $scope.key = "";
+
+    $scope.searchSong = function() {
+      if(this.key) {
+        youtube.search({
+          key: this.key
+        })
+          .success(function(data){
+            $scope.results = data;
+          });
+      }
+    };
+
+    $scope.addSong = function(index) {
+
+      var s = {
+        name: $scope.results[index].snippet.title,
+        id: $scope.results[index].id.videoId
+      };
+
+      addSongs([s]);
+
+      $scope.results = null;
+      $scope.key = "";
+    };
+
 
 
     $scope.server_id = $stateParams.server_id;
@@ -36,6 +62,10 @@ angular.module('aplayerApp')
       }
     };
 
+    $scope.getServerImage = function(i) {
+      return "images/servers/" + i + ".jpg";
+    };
+
     $scope.updateServer = function() {
       setTimeout(function(){
         Server.update($stateParams.server_id, {
@@ -44,7 +74,7 @@ angular.module('aplayerApp')
       },500);
     };
 
-    $scope.tracks = [];
+    $scope.tracks = null;
 
     var addSongs = function(songs) {
       // TODO make unique
@@ -70,6 +100,7 @@ angular.module('aplayerApp')
       if(!$scope.tracks[trackC].extra_data) {
         youtube.loadExtraData($scope.tracks[trackC].id)
           .success(function(extra_data){
+            console.log(extra_data);
             $scope.tracks[trackC].extra_data = extra_data;
             trackC++;
             loadSongsData();
@@ -108,6 +139,11 @@ angular.module('aplayerApp')
       socket.on($scope.server_id, function (data) {
         addSongs([data.song]);
       });
+    };
+
+    $scope.playerVars = {
+      controls: 1,
+      autoplay: 0
     };
 
 
@@ -226,6 +262,14 @@ angular.module('aplayerApp')
     $scope.removeSong = function(index) {
       $scope.playlist.songs.splice(index,1);
       resetUsed();
+    };
+
+
+    $scope.removePlaylist = function(id) {
+      if(!confirm("Sure?"))
+        return;
+      User.delPlaylist(id);
+      delete $scope.playlists[id];
     };
   }]);
 

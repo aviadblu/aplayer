@@ -1,11 +1,11 @@
 <div class="home_view">
   <div class="mode_select" ng-class="{full:auth.isLoggedIn()}">
     <div class="main_icon create_server" ng-click="createServer()" ng-show="auth.isLoggedIn()">
-      <h2>New Party</h2>
+      <h2>New List</h2>
       <img src="../images/music-server.png" >
     </div>
     <div class="main_icon open_guest" ng-click="openGuest()">
-      <h2>Join Party</h2>
+      <h2>Active lists</h2>
       <img src="../images/music-client.png" >
     </div>
     <br class="clr">
@@ -16,11 +16,11 @@
 
 <script type="text/ng-template" id="/new_server.html">
   <div class="server_form">
-    <h4>Create new server</h4>
+    <h4>Create new list</h4>
     <form ng-submit="createServer()" ng-hide="loading">
       <div class="form-group">
         <label for="exampleInputEmail1">Email address</label>
-        <input type="text" id="exampleInputEmail1" class="form-control" ng-model="server_form.name" required="" placeholder="Please enter a name for your music server">
+        <input type="text" id="exampleInputEmail1" class="form-control" ng-model="server_form.name" required="" placeholder="Your list name">
       </div>
       <div class="form-group">
         <div class="btn-group">
@@ -28,7 +28,7 @@
           <label class="btn btn-primary" ng-model="server_form.private" btn-radio="1">Private</label>
         </div>
       </div>
-      <button type="submit" class="btn btn-warning">Create server</button>
+      <button type="submit" class="btn btn-warning">Create List</button>
     </form>
     <div class="loader" ng-show="loading">
       Please wait...
