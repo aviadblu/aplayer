@@ -45,6 +45,7 @@
     "grunt-express": "^1.4.1",
     "grunt-google-cdn": "~0.2.0",
     "grunt-karma": "^0.10.1",
+    "grunt-ng-annotate": "^0.10.0",
     "grunt-ngmin": "~0.0.2",
     "grunt-open": "~0.2.0",
     "grunt-rev": "~0.1.0",
