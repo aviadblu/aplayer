@@ -51,6 +51,10 @@
 
       this.getBG = function (track) {
 
+        if(!track.extra_data) {
+          return "";
+        }
+
         var thumbs = track.extra_data.thumbnails;
 
         var bg_url;
@@ -70,6 +74,10 @@
 
       this.getSmallestThumb = function (track) {
 
+        if(!track.extra_data) {
+          return "";
+        }
+
         var thumbs = track.extra_data.thumbnails;
 
         var bg_url;
@@ -88,6 +96,10 @@
       };
 
       this.getClosetSizeThumb = function (track, size) {
+
+        if(!track.extra_data) {
+          return "";
+        }
 
         var thumbs = track.extra_data.thumbnails;
 

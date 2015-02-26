@@ -985,6 +985,12 @@ h1.list_name {
   background-color:#7ab700;
 }
 
+.track_view .remove_song{
+  position:absolute;
+  bottom:5px;
+  right:5px;
+}
+
 .search_results {
   height:120px;
   top:32px;

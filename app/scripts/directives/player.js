@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('aplayerApp')
-  .directive('player', ['$http', '$rootScope', '$timeout', '$interval', 'principal', 'player_service', '$q', function ($http, $rootScope, $timeout, $interval, principal, player_service, $q) {
+  .directive('player', ['$http', '$rootScope', '$timeout', '$interval', '$state', '$stateParams', 'principal', 'player_service', '$q', 'youtube', function ($http, $rootScope, $timeout, $interval, $state, $stateParams, principal, player_service, $q, youtube) {
     return {
       restrict: 'E',
       templateUrl: "views/directives/player.html",
@@ -36,37 +36,79 @@ angular.module('aplayerApp')
 
         $scope.player_id = ["", ""];
 
+        var updateServer = function() {
+          $http.post('/api/songs/update_state',{
+            uid: $scope.server_id,
+            tracks: $scope.tracks,
+            trackIndex: $scope.currTrack
+          });
+        };
+
+        var updateTracks = function() {
+          $http.post('/api/songs/update_state',{
+            update_db: 1,
+            uid: $scope.server_id,
+            tracks: $scope.tracks,
+            trackIndex: $scope.currTrack
+          });
+        };
+
+        var fixMissingTracksData = function(tracks, cb) {
+          for(var i in tracks) {
+            if(!tracks[i].extra_data) {
+              // load
+              youtube.loadExtraData(tracks[i].id)
+                .success(function(extra_data){
+                  tracks[i].extra_data = extra_data;
+                });
+              console.log("fixing song missing data");
+            }
+          }
+
+          updateTracks();
+          cb();
+        };
+
 
         //var trackList;
         var init = function () {
-          if ($scope.options.shuffle) {
-            // shuffling tracks ...
-            $scope.trackList = player_service.mixArray($scope.tracks, true);
-          }
-          else {
-            $scope.trackList = player_service.mixArray($scope.tracks, false);
-          }
 
-          var intervalStart = (new Date()).valueOf().toString() + Math.random().toString();
-          $rootScope.intervals[intervalStart] = $interval(updateServer,2500);
+          fixMissingTracksData($scope.tracks, function(){
+            if ($scope.options.shuffle) {
+              // shuffling tracks ...
+              $scope.trackList = player_service.mixArray($scope.tracks, true);
+            }
+            else {
+              $scope.trackList = player_service.mixArray($scope.tracks, false);
+            }
+
+            var intervalStart = (new Date()).valueOf().toString() + Math.random().toString();
+            $rootScope.intervals[intervalStart] = $interval(updateServer,2500);
 
 
-          var intervalStart = (new Date()).valueOf().toString() + Math.random().toString();
-          $rootScope.intervals[intervalStart] = $interval(updateTracks,8000);
+            var intervalStart = (new Date()).valueOf().toString() + Math.random().toString();
+            $rootScope.intervals[intervalStart] = $interval(updateTracks,8000);
 
-          $scope.actions.setTrack($scope.play_data.track_index);
-          $scope.actions.preparePlayer(true)
-            .then(function (player) {
+            if($scope.empty_server) {
+              return;
+            }
 
-              $scope.$on('youtube.player.ended', function ($event, player) {
-                $scope.actions.trackEnded(player);
+            $scope.actions.setTrack($scope.play_data.track_index);
+            $scope.actions.preparePlayer(true)
+              .then(function (player) {
+
+                $scope.$on('youtube.player.ended', function ($event, player) {
+                  $scope.actions.trackEnded(player);
+                });
+
+                var intervalStart = (new Date()).valueOf().toString() + Math.random().toString();
+                $rootScope.intervals[intervalStart] = $interval(loop, 200);
+
+
               });
-
-              var intervalStart = (new Date()).valueOf().toString() + Math.random().toString();
-              $rootScope.intervals[intervalStart] = $interval(loop, 200);
+          });
 
 
-            });
 
 
 
@@ -266,6 +308,10 @@ angular.module('aplayerApp')
             // rest buffer
             $scope.play_data.buffered = false;
             $scope.safeApply(function () {});
+          },
+
+          removeSong: function(index) {
+            $scope.tracks.splice(index,1);
           }
         };
 
@@ -327,25 +373,14 @@ angular.module('aplayerApp')
             $scope.trackList = player_service.mixArray($scope.tracks, false);
           }
           updateTracks();
+          if($scope.empty_server && $scope.tracks.length > 0) {
+
+          }
         });
 
 
-        var updateServer = function() {
-          $http.post('/api/songs/update_state',{
-            uid: $scope.server_id,
-            tracks: $scope.tracks,
-            trackIndex: $scope.currTrack
-          });
-        };
 
-        var updateTracks = function() {
-          $http.post('/api/songs/update_state',{
-            update_db: 1,
-            uid: $scope.server_id,
-            tracks: $scope.tracks,
-            trackIndex: $scope.currTrack
-          });
-        };
+
 
 
         $scope.safeApply = function (fn) {

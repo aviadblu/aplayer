@@ -28,7 +28,7 @@
   <img ng-src="{{play_data.background}}">
 </div>
 
-<div id="player_bottom">
+<div id="player_bottom" ng-if="!empty_server">
   <table>
     <tr>
       <td style="width:80px;" class="server_image">
@@ -69,6 +69,7 @@
   </table>
 </div>
 
+
 <div class="player_actions_top"><span class="server_name" ng-bind="server_data.name"></span></div>
 <div class="search_song" ng-class="{results:results}">
   <div class="search_form_wrap">
@@ -89,5 +90,6 @@
   <div ng-if="track.extra_data" class="track_view" ng-repeat="track in tracks" ng-class="{active:play_data.original_index == $index}" ng-click="actions.selectTrack($index)">
     <span class="text" ng-bind="track.name"></span>
     <img ng-src="{{getTracksThumb(track)}}" >
+    <fa name="trash-o" class="remove_song" size="1" ng-click='actions.removeSong($index)'></fa>
   </div>
 </div>
