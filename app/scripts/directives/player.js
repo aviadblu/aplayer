@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('aplayerApp')
-  .directive('player', ['$http', '$rootScope', '$timeout', 'principal', 'player_service', '$q', function ($http, $rootScope, $timeout, principal, player_service, $q) {
+  .directive('player', ['$http', '$rootScope', '$timeout', '$interval', 'principal', 'player_service', '$q', function ($http, $rootScope, $timeout, $interval, principal, player_service, $q) {
     return {
       restrict: 'E',
       templateUrl: "views/directives/player.html",
@@ -48,11 +48,11 @@ angular.module('aplayerApp')
           }
 
           var intervalStart = (new Date()).valueOf().toString() + Math.random().toString();
-          $rootScope.intervals[intervalStart] = setInterval(updateServer,2500);
+          $rootScope.intervals[intervalStart] = $interval(updateServer,2500);
 
 
           var intervalStart = (new Date()).valueOf().toString() + Math.random().toString();
-          $rootScope.intervals[intervalStart] = setInterval(updateTracks,8000);
+          $rootScope.intervals[intervalStart] = $interval(updateTracks,8000);
 
           $scope.actions.setTrack($scope.play_data.track_index);
           $scope.actions.preparePlayer(true)
@@ -63,7 +63,7 @@ angular.module('aplayerApp')
               });
 
               var intervalStart = (new Date()).valueOf().toString() + Math.random().toString();
-              $rootScope.intervals[intervalStart] = setInterval(loop, 200);
+              $rootScope.intervals[intervalStart] = $interval(loop, 200);
 
 
             });
@@ -317,9 +317,20 @@ angular.module('aplayerApp')
           updateServer();
         });
 
+        // watch for new tracks
+        var watcher = $scope.$watch('tracks.length', function() {
+          if ($scope.options.shuffle) {
+            // shuffling tracks ...
+            $scope.trackList = player_service.mixArray($scope.tracks, true);
+          }
+          else {
+            $scope.trackList = player_service.mixArray($scope.tracks, false);
+          }
+          updateTracks();
+        });
+
 
         var updateServer = function() {
-          console.log("update")
           $http.post('/api/songs/update_state',{
             uid: $scope.server_id,
             tracks: $scope.tracks,

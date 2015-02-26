@@ -79,78 +79,15 @@
   </div>
   <div class="search_results">
     <div class="track_view" ng-repeat="track in results" ng-click="addSong($index)">
+      <span class="text" ng-bind="track.snippet.title"></span>
       <img ng-src="{{track.snippet.thumbnails.default.url}}" >
     </div>
   </div>
-
 </div>
+
 <div ng-if="tracks" class="track_list_bottom" style="overflow:hidden;" slimscroll="{height: '120px'}">
   <div ng-if="track.extra_data" class="track_view" ng-repeat="track in tracks" ng-class="{active:play_data.original_index == $index}" ng-click="actions.selectTrack($index)">
+    <span class="text" ng-bind="track.name"></span>
     <img ng-src="{{getTracksThumb(track)}}" >
   </div>
 </div>
-
-
-<style>
-
-  .search_results {
-    height:120px;
-    top:32px;
-    background-color:#000;
-    opacity: 0.9;
-  }
-
-  .search_song {
-    position: fixed;
-    bottom:120px;
-    width:100%;
-    height:32px;
-    -webkit-transition: height 500ms ease-in-out;
-    -moz-transition: height 500ms ease-in-out;
-    -ms-transition: height 500ms ease-in-out;
-    -o-transition: height 500ms ease-in-out;
-    transition: height 500ms ease-in-out;
-    border-bottom: 1px solid #7ab700;
-  }
-
-  .search_song.results {
-    height:153px;
-  }
-
-  .search_form_wrap {
-    background-color:#000;
-    opacity: 0.9;
-    width:100%;
-    max-width:400px;
-    height:30px;
-    line-height:30px;
-    left:0;
-    position: absolute;
-    top:0;
-  }
-
-  .search_form_wrap input[type="text"] {
-    border: 0px;
-    width:100%;
-    height:30px;
-    line-height:30px;
-    background-color:#000;
-    padding:0px 10px;
-    padding-right:40px;
-  }
-
-  .search_form_wrap i{
-    position: absolute;
-    top:0;
-    right:0;
-    cursor:pointer;
-    height:30px;
-    width:30px;
-    border:0px solid #fff;
-  }
-
-
-
-
-
-</style>

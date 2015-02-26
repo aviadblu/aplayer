@@ -37,7 +37,7 @@ angular.module('aplayerApp')
       addSongs([s]);
 
       $scope.results = null;
-      $scope.key = "";
+      this.key = "";
     };
 
 
@@ -100,7 +100,6 @@ angular.module('aplayerApp')
       if(!$scope.tracks[trackC].extra_data) {
         youtube.loadExtraData($scope.tracks[trackC].id)
           .success(function(extra_data){
-            console.log(extra_data);
             $scope.tracks[trackC].extra_data = extra_data;
             trackC++;
             loadSongsData();
@@ -183,7 +182,7 @@ angular.module('aplayerApp')
         })
           .success(function(data){
             $scope.results = data;
-
+            this.key = "";
             resetUsed();
           });
       }
