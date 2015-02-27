@@ -8,6 +8,7 @@ RUN sudo ln -s "$(which nodejs)" /usr/bin/node
 RUN npm install npm -g
 RUN npm install bower -g
 RUN npm install -g grunt-cli
+RUN npm install -g forever
 
 WORKDIR /opt/aplayer
 COPY . /opt/aplayer

@@ -32,7 +32,7 @@ angular.module('aplayerApp')
     $scope.openGuest = function () {
       $state.go('app.clients');
     };
-    
+
 
 
     Server.getServers()
