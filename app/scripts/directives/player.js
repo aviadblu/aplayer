@@ -236,6 +236,7 @@ angular.module('aplayerApp')
             player.setVolume($scope.play_data.volume);
             player.unMute();
             player.seekTo(0);
+            player.pauseVideo();
           },
 
           buffer_next: function() {

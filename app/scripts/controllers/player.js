@@ -181,7 +181,7 @@ angular.module('aplayerApp')
 
     $scope.playerVars = {
       controls: 1,
-      autoplay: 0
+      autoplay: 1
     };
 
 
