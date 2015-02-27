@@ -260,11 +260,7 @@ angular.module('aplayerApp')
               $scope.play_data.track_index++;
             }
 
-            // set new view
-            $scope.actions.setTrack($scope.play_data.track_index);
-
-
-            $scope.actions.switchSong($scope.play_data.track_index, true);
+            $scope.actions.applyNewTrack();
           },
 
           setSong: function(track_index) {
