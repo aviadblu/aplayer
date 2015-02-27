@@ -8,7 +8,7 @@
  * Controller of the aplayerApp
  */
 angular.module('aplayerApp')
-  .controller('HomeCtrl', ['$scope','$http','$state','Auth','$modal','principal', function ($scope, $http, $state, Auth, $modal, principal) {
+  .controller('HomeCtrl', ['$scope','$http','$state','Auth','$modal','principal','Server', function ($scope, $http, $state, Auth, $modal, principal, Server) {
 
     $scope.auth = Auth;
 
@@ -32,12 +32,14 @@ angular.module('aplayerApp')
     $scope.openGuest = function () {
       $state.go('app.clients');
     };
+    
 
 
-    principal.identity()
-      .then(function (data) {
-        $scope.servers = data.servers;
-      });
+    Server.getServers()
+      .success(function(data){
+        $scope.servers = data;
+
+      })
 
 
   }])

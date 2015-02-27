@@ -16,6 +16,26 @@ angular.module('aplayerApp')
 
     $scope.key = "";
 
+    $scope.deleteServer = function() {
+      if($stateParams.server_id) {
+        if(!confirm("Delete this list?"))
+        return;
+
+        Server.deleteServer($stateParams.server_id)
+          .success(function(){
+            $state.go("app.home");
+          })
+          .error(function(err){
+            alert(err)
+          })
+
+
+
+      }
+
+
+    };
+
     $scope.searchSong = function() {
       if(this.key) {
         youtube.search({

@@ -33,6 +33,54 @@ var serverServices = {
 
     });
   },
+
+  deleteServer: function(accessToken, server_id, callback) {
+    var servers = accounts_db.child(accessToken).child("servers");
+
+    servers.once("value", function (data) {
+      var data = data.val();
+      if (!data) {
+        callback("No data");
+        return;
+      }
+
+      var serverToRemove = null;
+
+      for(var server_k in data) {
+
+        if(data[server_k].id == server_id) {
+          serverToRemove = server_k;
+        }
+      }
+
+      if(serverToRemove) {
+        servers.child(serverToRemove).remove(function(){
+          callback(null, "ok");
+        });
+      }
+      else {
+        callback("No server");
+      }
+
+    });
+
+  },
+
+  getAll: function(accessToken, callback){
+    var servers = accounts_db.child(accessToken).child("servers");
+    servers.once("value", function (data) {
+      var data = data.val();
+      if (!data) {
+        callback();
+        return;
+      }
+
+      callback(data);
+
+    });
+  },
+
+
   getServer : function(request, callback) {
     var server_id_needed = request.server_id;
     var server_data;

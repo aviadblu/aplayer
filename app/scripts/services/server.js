@@ -9,6 +9,14 @@
         return $http.post("/api/server/create",form);
       };
 
+      this.deleteServer = function(serverId) {
+        return $http.delete("/api/server/delete?id=" + serverId);
+      };
+
+      this.getServers = function() {
+        return $http.get("/api/server/getAll");
+      };
+
       this.getServerData = function(server_id) {
         return $http.get("/api/server/get-data?server_id=" + server_id);
       };

@@ -14,6 +14,35 @@ var server_ctrl = {
       res.send(data)
     });
   },
+
+  deleteServer: function(req, res) {
+    var accessToken = req.get('x-access-token');
+    if (!accessToken) {
+      return res.status(400).send("Please log in!");
+    }
+    var serverId = req.query.id;
+
+    serverServices.deleteServer(accessToken, serverId, function (err, data) {
+      if(err) {
+        res.status(400).send(err);
+      }
+      res.send(data);
+    });
+  },
+
+  getAll: function(req, res) {
+    var accessToken = req.get('x-access-token');
+    if (!accessToken) {
+      return res.status(400).send("Please log in!");
+    }
+    serverServices.getAll(accessToken, function (data) {
+      if(data)
+        res.send(data);
+      else
+        res.status(400).send("servers not found!");
+    });
+  },
+
   getData: function(req, res) {
     serverServices.getServer(req.query, function (data) {
       if(data)

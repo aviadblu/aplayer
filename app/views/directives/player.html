@@ -70,7 +70,14 @@
 </div>
 
 
-<div class="player_actions_top"><span class="server_name" ng-bind="server_data.name"></span></div>
+<div class="player_actions_top">
+  <span class="server_name" ng-bind="server_data.name"></span>
+  <button class="btn btn-danger action" ng-click="deleteServer()">
+    <span class="text">Delete</span>
+    <fa name="trash"></fa>
+  </button>
+
+</div>
 <div class="search_song" ng-class="{results:results}">
   <div class="search_form_wrap">
     <form ng-submit="searchSong()">

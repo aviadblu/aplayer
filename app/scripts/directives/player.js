@@ -235,6 +235,7 @@ angular.module('aplayerApp')
           applyPreset: function (player) {
             player.setVolume($scope.play_data.volume);
             player.unMute();
+            player.seekTo(0);
           },
 
           buffer_next: function() {
