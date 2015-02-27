@@ -185,6 +185,11 @@ angular.module('aplayerApp')
             });
           },
 
+          play: function() {
+            $scope.play_data.status = "playing";
+            $scope.yt_player[$scope.play_data.player].playVideo();
+          },
+
           next: function() {
 
             if (!$scope.trackList[$scope.play_data.track_index + 1]) {
@@ -229,6 +234,7 @@ angular.module('aplayerApp')
 
           applyPreset: function (player) {
             player.setVolume($scope.play_data.volume);
+            player.unMute();
           },
 
           buffer_next: function() {
@@ -312,6 +318,17 @@ angular.module('aplayerApp')
 
           removeSong: function(index) {
             $scope.tracks.splice(index,1);
+          },
+
+          goToTime: function(event) {
+            var progressWidth = document.getElementById("progress_wrap").clientWidth;
+            var gotTo = Math.floor($scope.play_data.track.extra_data.duration.length * (event.offsetX/progressWidth));
+
+            //console.log("go to " + gotTo);
+            $scope.yt_player[$scope.play_data.player].seekTo(gotTo);
+            $scope.actions.play();
+
+
           }
         };
 
@@ -342,6 +359,7 @@ angular.module('aplayerApp')
 
 
               $scope.tracks[$scope.trackList[$scope.play_data.track_index].original_index].currTime = fixed_time;
+
 
             }
 

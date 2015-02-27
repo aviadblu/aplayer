@@ -51,7 +51,7 @@
             <span ng-bind="play_data.next_track.name"></span>
           </div>
         </div>
-        <div class="progress_data" ng-click="">
+        <div class="progress_data" id="progress_wrap" ng-click="actions.goToTime($event)">
           <div class="text"><span>Time left: </span> <span ng-bind="play_data.timeToNext"></span></div>
           <div class="fill" ng-style="progress_style"></div>
         </div>

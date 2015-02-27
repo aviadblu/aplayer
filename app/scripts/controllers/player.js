@@ -8,7 +8,7 @@
  * Controller of the aplayerApp
  */
 angular.module('aplayerApp')
-  .controller('PlayerCtrl', ['$scope','$http', '$state','$stateParams','Server','youtube','$modal',function ($scope, $http, $state, $stateParams, Server, youtube, $modal) {
+  .controller('PlayerCtrl', ['$scope','$http','$timeout', '$state','$stateParams','Server','youtube','$modal',function ($scope, $http, $timeout, $state, $stateParams, Server, youtube, $modal) {
 
     $scope.test = function(event) {
       console.log("down")
@@ -90,16 +90,20 @@ angular.module('aplayerApp')
     };
 
 
-
     var trackC = 0;
     var loadSongsData = function() {
       if(!$scope.tracks[trackC]) {
         if($scope.empty_server && $scope.tracks.length > 0) {
-          $state.transitionTo($state.current, $stateParams, {
-            reload: true,
-            inherit: false,
-            notify: true
-          });
+
+          $scope.wait = true;
+          $timeout(function(){
+            $state.transitionTo($state.current, $stateParams, {
+              reload: true,
+              inherit: false,
+              notify: true
+            });
+          },5000)
+
         }
         return;
       }
