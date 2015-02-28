@@ -31,6 +31,7 @@ module.exports = function (app) {
   app.use('/api/client', require('./api/client'));
   app.use('/api/youtube', require('./api/youtube'));
   app.use('/api/user', require('./api/user'));
+  app.use('/api/facebook', require('./api/facebook'));
 	// All other routes should redirect to the index.html
 
 

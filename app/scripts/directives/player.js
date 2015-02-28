@@ -16,12 +16,13 @@ angular.module('aplayerApp')
           buffer_space: 20
         };
 
-        $scope.debug = false;
+        $scope.debug = true;
 
 
         $scope.play_data = {
           background: "",
-          status: "paused",
+          status: "unstarted",
+          user_status: "pause",
           player: 0,
           timeToNext: "0:00",
           time: "0:00",
@@ -45,11 +46,16 @@ angular.module('aplayerApp')
         };
 
         var updateTracks = function() {
+          var next = null;
+          if($scope.play_data.next_track) {
+            next = $scope.play_data.next_track.original_index;
+          }
           $http.post('/api/songs/update_state',{
             update_db: 1,
             uid: $scope.server_id,
             tracks: $scope.tracks,
-            trackIndex: $scope.currTrack
+            trackIndex: $scope.currTrack,
+            next_track: next
           });
         };
 
@@ -82,12 +88,12 @@ angular.module('aplayerApp')
               $scope.trackList = player_service.mixArray($scope.tracks, false);
             }
 
-            var intervalStart = (new Date()).valueOf().toString() + Math.random().toString();
-            $rootScope.intervals[intervalStart] = $interval(updateServer,2500);
+            //var intervalStart = (new Date()).valueOf().toString() + Math.random().toString();
+            //$rootScope.intervals[intervalStart] = $interval(updateServer,2500);
 
 
             var intervalStart = (new Date()).valueOf().toString() + Math.random().toString();
-            $rootScope.intervals[intervalStart] = $interval(updateTracks,8000);
+            $rootScope.intervals[intervalStart] = $interval(updateTracks,2000);
 
             if($scope.empty_server) {
               return;
@@ -171,13 +177,13 @@ angular.module('aplayerApp')
           },
 
           play_pause: function () {
-            if ($scope.play_data.status == "paused") {
-              $scope.play_data.status = "playing";
+            if ($scope.play_data.status == "paused" || $scope.play_data.status == "unstarted") {
+              $scope.play_data.user_status = "play";
               $scope.yt_player[$scope.play_data.player].playVideo();
 
             }
             else {
-              $scope.play_data.status = "paused";
+              $scope.play_data.user_status = "pause";
               $scope.yt_player[$scope.play_data.player].pauseVideo();
             }
 
@@ -186,7 +192,7 @@ angular.module('aplayerApp')
           },
 
           play: function() {
-            $scope.play_data.status = "playing";
+            //$scope.play_data.status = "playing";
             $scope.yt_player[$scope.play_data.player].playVideo();
           },
 
@@ -236,6 +242,7 @@ angular.module('aplayerApp')
             player.setVolume($scope.play_data.volume);
             player.unMute();
             player.seekTo(0);
+            player.playVideo();
             player.pauseVideo();
           },
 
@@ -305,7 +312,7 @@ angular.module('aplayerApp')
               $scope.play_data.player = 0;
             }
 
-            if($scope.play_data.status == "playing") {
+            if($scope.play_data.user_status == "play") {
               $scope.yt_player[$scope.play_data.player].playVideo();
             }
 
@@ -323,21 +330,23 @@ angular.module('aplayerApp')
             var gotTo = Math.floor($scope.play_data.track.extra_data.duration.length * (event.offsetX/progressWidth));
 
             //console.log("go to " + gotTo);
+            $scope.yt_player[$scope.play_data.player].playVideo();
+            $scope.yt_player[$scope.play_data.player].pauseVideo();
             $scope.yt_player[$scope.play_data.player].seekTo(gotTo);
-            $scope.actions.play();
+
+            if($scope.play_data.user_status == "pause") {
+              $scope.actions.updateProgress();
+            }
+            else {
+              $scope.actions.play();
+            }
 
 
-          }
-        };
 
+          },
 
-        init();
-
-        var loop = function () {
-          if ($scope.yt_player[$scope.play_data.player]) {
-
-            if ($scope.play_data.status == "playing") {
-
+          updateProgress: function() {
+            try {
               var track_length = $scope.play_data.track.extra_data.duration.length;
               var time = $scope.yt_player[$scope.play_data.player].getCurrentTime();
               var time_left = Math.floor(track_length - time);
@@ -358,8 +367,35 @@ angular.module('aplayerApp')
 
               $scope.tracks[$scope.trackList[$scope.play_data.track_index].original_index].currTime = fixed_time;
 
+              $scope.safeApply(function () {});
+            }
+            catch(e) {
+              //console.log("Update progress error: " + e);
+            }
+          }
+        };
+
+
+        init();
+
+        var loopCounter = 0;
+
+        var loop = function () {
+          loopCounter++;
+          if ($scope.yt_player[$scope.play_data.player]) {
+
+            $scope.actions.updateProgress();
+
+
+            if(loopCounter%5 == 0) {
+              //console.log($scope.yt_player[$scope.play_data.player]);
+              //console.log($scope.yt_player[$scope.play_data.player].getPlayerState());
 
             }
+
+            // update state:
+            $scope.play_data.status = $scope.yt_player[$scope.play_data.player].currentState;
+
 
             $scope.safeApply(function () {});
           }

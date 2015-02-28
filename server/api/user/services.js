@@ -3,6 +3,16 @@ var accounts_db = db.child('accounts');
 var uuid = require('node-uuid');
 
 var userServices = {
+  getUser: function(accessToken, callback) {
+    var user = accounts_db.child(accessToken);
+    user.once("value", function(data) {
+      var data = data.val();
+      if (!data) {
+        callback(null)
+      }
+      callback(data);
+    });
+  },
 
   addPlaylist: function(accessToken, playlist , callback) {
     var user = accounts_db.child(accessToken);

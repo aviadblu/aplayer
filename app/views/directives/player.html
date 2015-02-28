@@ -3,6 +3,7 @@
 
   <div>Background: <span ng-bind="play_data.background"></span></div>
   <div>Status: <span ng-bind="play_data.status"></span></div>
+  <div>User Status: <span ng-bind="play_data.user_status"></span></div>
   <div>Player: <span ng-bind="play_data.player"></span></div>
   <div>Index: <span ng-bind="play_data.track_index"></span></div>
   <div>Curr: <span ng-bind="play_data.track.name"></span></div>
@@ -24,19 +25,17 @@
   </div>
 </div>
 
-<div id="player_bg">
-  <img ng-src="{{play_data.background}}">
-</div>
+<div id="player_bg" style="background-image:url({{play_data.background}})"></div>
 
-<div id="player_bottom" ng-if="!empty_server">
+<div id="player_bottom" ng-if="!empty_server" ng-class="play_data.status">
   <table>
     <tr>
       <td style="width:80px;" class="server_image">
         <img ng-src="{{getServerImage(server_data.rand_no)}}">
       </td>
       <td style="width:80px;text-align:center;cursor:pointer;">
-        <fa name="play" size="5" ng-click='actions.play_pause()' ng-hide="play_data.status == 'playing'"></fa>
-        <fa name="pause" size="4" ng-click='actions.play_pause()' ng-show="play_data.status == 'playing'"></fa>
+        <fa name="play" size="5" ng-click='actions.play_pause()' ng-hide="play_data.user_status == 'play'"></fa>
+        <fa name="pause" size="4" ng-click='actions.play_pause()' ng-show="play_data.user_status == 'play'"></fa>
       </td>
       <td>
         <div class="tracks_data">
@@ -72,10 +71,18 @@
 
 <div class="player_actions_top">
   <span class="server_name" ng-bind="server_data.name"></span>
+
+
+
   <button class="btn btn-danger action" ng-click="deleteServer()">
     <span class="text">Delete</span>
     <fa name="trash"></fa>
   </button>
+
+  <div class="btn-group action">
+    <label class="btn btn-success" ng-model="server_data.active" ng-click="updateServer()" btn-radio="1">Share Active</label>
+    <label class="btn btn-success" ng-model="server_data.active" ng-click="updateServer()" btn-radio="0">Share Not Active</label>
+  </div>
 
 </div>
 <div class="search_song" ng-class="{results:results}">
