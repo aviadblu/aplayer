@@ -295,7 +295,36 @@ angular.module('aplayerApp')
             catch(e) {
               //console.log("Update progress error: " + e);
             }
+          },
+
+          removeSong: function(index) {
+            if($scope.tracks.length <= 1) {
+              alert("Error")
+              return;
+            }
+
+            if(index == $scope.play_data.track_index) {
+              $scope.actions.next();
+            }
+
+            var next_playlist_index = $scope.play_data.playlist_index + 1;
+            if(typeof(playlistOrder[next_playlist_index]) === 'undefined') {
+              next_playlist_index = 0;
+            }
+
+
+            $scope.tracks.splice(index,1);
+            $scope.tracks_balanced.splice(index,1);
+
+            playlistOrder.splice(playlistOrder.indexOf(index),1);
+
+
+            if(index == next_playlist_index) {
+              setViewInfo();
+            }
+
           }
+
         };
 
 
