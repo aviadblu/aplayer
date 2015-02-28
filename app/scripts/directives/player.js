@@ -311,11 +311,11 @@ angular.module('aplayerApp')
         $scope.addSongToList = function(index) {
           var song = $scope.results[index];
 
-
           var new_track = {
             name: song.snippet.title,
             id: song.id.videoId
           };
+
           youtube.loadExtraData(new_track.id)
             .success(function(extra_data){
               new_track.extra_data = extra_data;

@@ -1,16 +1,6 @@
-<div class="table_wrapper no_actions">
-  <table class="player_songs">
-    <tr>
-      <th></th>
-      <th>Name</th>
-      <th>Length</th>
-    </tr>
-    <tr ng-repeat="track in tracks"  ng-class="{selected:trackIndex==$index,playing:trackIndex==$index}">
-      <td class="status_icon"></td>
-      <td ng-bind="track.name"></td>
-      <td>
-        <span ng-bind="track.extra_data.duration.text"></span>
-      </td>
-    </tr>
-  </table>
+<div ng-if="tracks" class="track_list_client" style="overflow:hidden;" slimscroll="{height: '100%'}">
+  <div ng-if="track.extra_data" class="track_view client" ng-repeat="track in tracks" ng-class="{active:trackIndex==$index,next:next_track==$index}">
+    <span class="text" ng-bind="track.name"></span>
+    <img ng-src="{{getTracksThumb(track)}}" >
+  </div>
 </div>
