@@ -1,109 +1,113 @@
-<div ng-show="debug" style="width:600px;margin-top:200px;">
+<div ng-show="debug" style="border:1px solid red;">
 
 
-  <div>Background: <span ng-bind="play_data.background"></span></div>
-  <div>Status: <span ng-bind="play_data.status"></span></div>
-  <div>User Status: <span ng-bind="play_data.user_status"></span></div>
-  <div>Player: <span ng-bind="play_data.player"></span></div>
-  <div>Index: <span ng-bind="play_data.track_index"></span></div>
-  <div>Curr: <span ng-bind="play_data.track.name"></span></div>
-  <div>Next: <span ng-bind="play_data.next_track.name"></span></div>
-  <div>Time To Next: <span ng-bind="play_data.timeToNext"></span></div>
-  <div>Completed: <span ng-bind="play_data.completed"></span>%</div>
-  <div>Original Index: <span ng-bind="play_data.original_index"></span></div>
+  <div style="width:600px;margin-top:100px;">
+    <div>Players ready: <span ng-bind="play_data.players_ready"></span>/<span ng-bind="tracks.length"></span></div>
+    <div>Background: <span ng-bind="play_data.background"></span></div>
+    <div>Status: <span ng-bind="play_data.status"></span></div>
+    <div>User Status: <span ng-bind="play_data.user_status"></span></div>
+    <div>Index: <span ng-bind="play_data.track_index"></span></div>
+    <div>Curr: <span ng-bind="play_data.track.name"></span></div>
+    <div>Next: <span ng-bind="play_data.next_track.name"></span></div>
+    <div>Time To Next: <span ng-bind="play_data.timeToNext"></span></div>
+    <div>Completed: <span ng-bind="play_data.completed"></span>%</div>
+    <div>Original Index: <span ng-bind="play_data.original_index"></span></div>
+  </div>
 
-
-
-
-  <button ng-click="actions.play_pause()" style="color:#000">
-    Play
-  </button>
-
-  <div class="youtubePlayer_wrap" ng-init="actions.init()">
-    <youtube-video player-width="280" player-height="200" video-id="player_id[0]" player="yt_player[0]" player-vars="playerVars"></youtube-video>
-    <youtube-video player-width="280" player-height="200" video-id="player_id[1]" player="yt_player[1]" player-vars="playerVars"></youtube-video>
+  <div class="youtubePlayer_wrap" ng-init="init_players()">
+    <youtube-video player-width="100" eventor-name="track.emiter_name" player-height="80" video-id="track.id" player="track.yt_player" ng-repeat="track in tracks_balanced"></youtube-video>
   </div>
 </div>
 
-<div id="player_bg" style="background-image:url({{play_data.background}})"></div>
+<div ng-if="!player_ready" class="preparing wait">
+  <div class="bg"></div>
+  <div class="loader">Preparing your list..</div>
+  <progressbar max="tracks.length" value="play_data.players_ready"><span style="color:#fff; white-space:nowrap;">{{play_data.players_ready}} / {{tracks.length}}</span></progressbar>
+</div>
 
-<div id="player_bottom" ng-if="!empty_server" ng-class="play_data.status">
-  <table>
-    <tr>
-      <td style="width:80px;" class="server_image">
-        <img ng-src="{{getServerImage(server_data.rand_no)}}">
-      </td>
-      <td style="width:80px;text-align:center;cursor:pointer;">
-        <fa name="play" size="5" ng-click='actions.play_pause()' ng-hide="play_data.user_status == 'play'"></fa>
-        <fa name="pause" size="4" ng-click='actions.play_pause()' ng-show="play_data.user_status == 'play'"></fa>
-      </td>
-      <td>
-        <div class="tracks_data">
-          <div class="track_data">
-            <label>Now:</label>
-            <img ng-src="{{smallestThumb(play_data.track)}}">
-            <span ng-bind="play_data.track.name"></span>
+
+<div ng-if="player_ready" class="player_wrapper">
+  <div id="player_bg" style="background-image:url({{play_data.background}})"></div>
+
+  <div id="player_bottom" ng-if="!empty_server" ng-class="play_data.status">
+    <table>
+      <tr>
+        <td style="width:80px;" class="server_image">
+          <img ng-src="{{getServerImage(server_data.rand_no)}}">
+        </td>
+        <td style="width:80px;text-align:center;cursor:pointer;">
+          <fa name="play" size="5" ng-click='actions.play_pause()' ng-hide="play_data.user_status == 'play'"></fa>
+          <fa name="pause" size="4" ng-click='actions.play_pause()' ng-show="play_data.user_status == 'play'"></fa>
+        </td>
+        <td>
+          <div class="tracks_data">
+            <div class="track_data">
+              <label>Now:</label>
+              <img ng-src="{{smallestThumb(play_data.track)}}">
+              <span ng-bind="play_data.track.name"></span>
+            </div>
+            <div class="track_data">
+              <label>Next:</label>
+              <img ng-src="{{smallestThumb(play_data.next_track)}}">
+              <span ng-bind="play_data.next_track.name"></span>
+            </div>
           </div>
-          <div class="track_data">
-            <label>Next:</label>
-            <img ng-src="{{smallestThumb(play_data.next_track)}}">
-            <span ng-bind="play_data.next_track.name"></span>
+          <div class="progress_data" id="progress_wrap" ng-click="actions.goToTime($event)">
+            <div class="text"><span>Time left: </span> <span ng-bind="play_data.timeToNext"></span></div>
+            <div class="fill" ng-style="progress_style"></div>
           </div>
-        </div>
-        <div class="progress_data" id="progress_wrap" ng-click="actions.goToTime($event)">
-          <div class="text"><span>Time left: </span> <span ng-bind="play_data.timeToNext"></span></div>
-          <div class="fill" ng-style="progress_style"></div>
-        </div>
-      </td>
+        </td>
 
-      <td style="width:80px">
-        <div class="next_prev">
-          <fa name="fast-forward" size="2" ng-click="actions.next()"></fa>
-        </div>
-        <div class="next_prev">
-          <fa name="fast-backward" size="2" ng-click="actions.prev()"></fa>
-        </div>
-      </td>
-    </tr>
-  </table>
-</div>
-
-
-<div class="player_actions_top">
-  <span class="server_name" ng-bind="server_data.name"></span>
-
-
-
-  <button class="btn btn-danger action" ng-click="deleteServer()">
-    <span class="text">Delete</span>
-    <fa name="trash"></fa>
-  </button>
-
-  <div class="btn-group action">
-    <label class="btn btn-success" ng-model="server_data.active" ng-click="updateServer()" btn-radio="1">Share Active</label>
-    <label class="btn btn-success" ng-model="server_data.active" ng-click="updateServer()" btn-radio="0">Share Not Active</label>
+        <td style="width:80px">
+          <div class="next_prev">
+            <fa name="fast-forward" size="2" ng-click="actions.next()"></fa>
+          </div>
+          <div class="next_prev">
+            <fa name="fast-backward" size="2" ng-click="actions.prev()"></fa>
+          </div>
+        </td>
+      </tr>
+    </table>
   </div>
 
-</div>
-<div class="search_song" ng-class="{results:results}">
-  <div class="search_form_wrap">
-    <form ng-submit="searchSong()">
-      <input type="text" placeholder="Search song and add to playlist" ng-model="key">
-      <fa name="search" size="2" ng-click='searchSong()'></fa>
-    </form>
+
+  <div class="player_actions_top">
+    <span class="server_name" ng-bind="server_data.name"></span>
+
+
+
+    <button class="btn btn-danger action" ng-click="deleteServer()">
+      <span class="text">Delete</span>
+      <fa name="trash"></fa>
+    </button>
+
+    <div class="btn-group action">
+      <label class="btn btn-success" ng-model="server_data.active" ng-click="updateServer()" btn-radio="1">Share Active</label>
+      <label class="btn btn-success" ng-model="server_data.active" ng-click="updateServer()" btn-radio="0">Share Not Active</label>
+    </div>
+
   </div>
-  <div class="search_results">
-    <div class="track_view" ng-repeat="track in results" ng-click="addSong($index)">
-      <span class="text" ng-bind="track.snippet.title"></span>
-      <img ng-src="{{track.snippet.thumbnails.default.url}}" >
+  <div class="search_song" ng-class="{results:results}">
+    <div class="search_form_wrap">
+      <form ng-submit="searchSong()">
+        <input type="text" placeholder="Search song and add to playlist" ng-model="key">
+        <fa name="search" size="2" ng-click='searchSong()'></fa>
+      </form>
+    </div>
+    <div class="search_results">
+      <div class="track_view" ng-repeat="track in results" ng-click="addSongToList($index)">
+        <span class="text" ng-bind="track.snippet.title"></span>
+        <img ng-src="{{track.snippet.thumbnails.default.url}}" >
+      </div>
+    </div>
+  </div>
+
+  <div ng-if="tracks" class="track_list_bottom" style="overflow:hidden;" slimscroll="{height: '120px'}">
+    <div ng-if="track.extra_data" class="track_view" ng-repeat="track in tracks" ng-class="{active:play_data.track_index == $index}" ng-click="actions.setTrackByOriginalIndex($index)">
+      <span class="text" ng-bind="track.name"></span>
+      <img ng-src="{{getTracksThumb(track)}}" >
+      <fa name="trash-o" class="remove_song" size="1" ng-click='actions.removeSong($index)'></fa>
     </div>
   </div>
 </div>
 
-<div ng-if="tracks" class="track_list_bottom" style="overflow:hidden;" slimscroll="{height: '120px'}">
-  <div ng-if="track.extra_data" class="track_view" ng-repeat="track in tracks" ng-class="{active:play_data.original_index == $index}" ng-click="actions.selectTrack($index)">
-    <span class="text" ng-bind="track.name"></span>
-    <img ng-src="{{getTracksThumb(track)}}" >
-    <fa name="trash-o" class="remove_song" size="1" ng-click='actions.removeSong($index)'></fa>
-  </div>
-</div>

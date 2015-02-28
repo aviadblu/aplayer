@@ -5,21 +5,9 @@
     .module('player_service', [])
     .service('player_service', ['$http', function ($http) {
 
-      this.mixArray = function (array, shuffle) {
-
-        var o = [], index;
-        for (var c in array) {
-          index = parseInt(c);
-          o[index] = array[c];
-          o[index].original_index = index;
-        }
-
-        if (shuffle) {
-          for (var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
-        }
-
+      this.mixArray = function (o) {
+        for (var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
         return o;
-
       };
 
 
