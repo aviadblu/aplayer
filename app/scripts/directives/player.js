@@ -16,7 +16,7 @@ angular.module('aplayerApp')
           buffer_space: 20
         };
 
-        $scope.debug = true;
+        $scope.debug = false;
 
         $scope.yt_players = [];
 
@@ -60,7 +60,6 @@ angular.module('aplayerApp')
         };
 
         var loadPlayer = function(index, callback) {
-          console.log("load player " + index);
           var track = JSON.stringify($scope.tracks[index]);
           $scope.tracks_balanced[index] = JSON.parse(track);
           $scope.tracks_balanced[index].emiter_name = "emiter_" + index;
@@ -72,7 +71,6 @@ angular.module('aplayerApp')
 
           $scope.$on($scope.tracks_balanced[index].emiter_name + '.ready', function ($event, player) {
             applyPreset($scope.tracks_balanced[index].yt_player);
-            console.log("Player " + index + " ready");
             callback();
 
           });
@@ -83,7 +81,7 @@ angular.module('aplayerApp')
         var nextLoad = 0;
         var loadPlayers = function() {
           if($scope.tracks[nextLoad]) {
-            loadPlayer(nextLoad, function() {
+            loadPlayer(nextLoad, function(){
               nextLoad++;
               $timeout(loadPlayers,100);
             })
