@@ -1,5 +1,3 @@
-<clientplayer server-id="{{server_id}}" template-url="views/directives/clientplayer.html"></clientplayer>
-
 <div class="search">
   <form class="form-inline" ng-submit="serach()">
     <div class="form-group song_key">
@@ -14,11 +12,14 @@
   </form>
 </div>
 
-
-
 <div class="song_result" ng-repeat="res in results">
   <button type="button" class="btn btn-primary btn-md btn-block" ng-bind="res.snippet.title" ng-click="suggest($index)"></button>
 </div>
+
+
+<clientplayer server-id="{{server_id}}" template-url="views/directives/clientplayer.html"></clientplayer>
+
+
 
 <script type="text/ng-template" id="/suggest.html">
   <div class="playlists_wrapper player_modal">

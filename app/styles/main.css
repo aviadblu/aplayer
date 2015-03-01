@@ -752,6 +752,10 @@ h2 {
 
 }
 
+#player_bottom.buffering {
+  /*background-color:red;*/
+}
+
 
 #player_bottom .play {
   height:80px;
@@ -790,7 +794,8 @@ h2 {
   border-top:1px solid #7ab700;
 }
 
-.player_actions_top .action {
+.player_actions_top .action
+{
   float:right;
   margin-left:5px;
   height:24px;
@@ -799,6 +804,17 @@ h2 {
   margin-top:3px;
   cursor: pointer;
 }
+
+.player_actions_top .action label {
+  height:24px;
+  line-height: 24px;
+  padding:0px 10px;
+
+  cursor: pointer;
+}
+
+
+
 
 .player_actions_top .server_name {
   ont-family: 'Podkova';
@@ -900,6 +916,13 @@ h2 {
   opacity: 0.8;
 }
 
+#player_bottom.buffering .progress_data {
+  background-image: url(../images/loader2.gif);
+  background-position: center right;
+  background-position: center right 5px;
+  background-repeat: no-repeat;
+}
+
 #player_bottom .progress_data .text {
   position: absolute;
   left:0px;
@@ -931,8 +954,11 @@ h2 {
   top:0;
   left:0;
   width:100%;
+  height:100%;
   z-index:-1;
   opacity: 0.8;
+  background-size:cover;
+  background-position: center;
 }
 
 #player_bg img {
@@ -980,9 +1006,16 @@ h1.list_name {
   border:1px solid #7ab700;
 }
 
+.track_view.client:hover {
+  border:0;
+}
+
+.track_view.client.next {
+  border:1px solid blue;
+}
+
 .track_view:hover img {
   opacity:0.1;
-
 }
 
 .track_view img {
@@ -1134,9 +1167,35 @@ player.empty .track_list_bottom{
   z-index:2;
   top:50%;
   margin-top:-100px;
-  margin-left:-150px;
+  margin-left:-175px;
   left:50%;
   color: #7ab700;
   font-size:24px;
   width:350px;
+}
+
+.player_wrapper {
+  -webkit-transition: height 500ms ease-in-out;
+  -moz-transition: height 500ms ease-in-out;
+  -ms-transition: height 500ms ease-in-out;
+  -o-transition: height 500ms ease-in-out;
+  transition: height 500ms ease-in-out;
+}
+
+.preparing .progress{
+  position: absolute;
+  top:50%;
+  left:50%;
+  width: 350px;
+  margin-left:-175px;
+  margin-top: -50px;
+  z-index: 1;
+}
+
+.preparing .loader {
+  background-image: none;
+}
+
+.preparing .progress .progress-bar {
+  background-color: #7ab700;
 }
