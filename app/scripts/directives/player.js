@@ -16,7 +16,7 @@ angular.module('aplayerApp')
           buffer_space: 20
         };
 
-        $scope.debug = false;
+        $scope.debug = true;
 
         $scope.yt_players = [];
 
