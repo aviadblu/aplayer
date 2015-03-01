@@ -16,18 +16,21 @@ angular.module('aplayerApp')
           buffer_space: 20
         };
 
-        $scope.debug = true;
+        $scope.debug = false;
+
+        $scope.yt_players = [];
 
 
         $scope.play_data = {
+          players_ready: 0,
           background: "",
           status: "unstarted",
           user_status: "pause",
-          player: 0,
           timeToNext: "0:00",
           time: "0:00",
           completed: 0,
           volume: 100,
+          playlist_index: 0,
           track_index: 0,
           track: null,
           next_track: null,
@@ -35,29 +38,133 @@ angular.module('aplayerApp')
           original_index: 0
         };
 
-        $scope.player_id = ["", ""];
 
-        var updateServer = function() {
-          $http.post('/api/songs/update_state',{
-            uid: $scope.server_id,
-            tracks: $scope.tracks,
-            trackIndex: $scope.currTrack
+        var checkYTPlayers = function() {
+          $scope.play_data.players_ready = 0;
+          for(var i in $scope.tracks) {
+            try {
+              if($scope.tracks_balanced[i].yt_player) {
+                $scope.play_data.players_ready++;
+              }
+            }
+            catch(e) {
+
+            }
+          }
+          if($scope.play_data.players_ready < $scope.tracks.length) {
+            $timeout(checkYTPlayers,500);
+          }
+          else {
+            initPlaylist();
+          }
+        };
+
+        var loadPlayer = function(index, callback) {
+          var track = JSON.stringify($scope.tracks[index]);
+          $scope.tracks_balanced[index] = JSON.parse(track);
+          $scope.tracks_balanced[index].emiter_name = "emiter_" + index;
+
+
+          $scope.$on($scope.tracks_balanced[index].emiter_name + '.ended', function ($event, player) {
+            $scope.actions.trackEnded();
+          });
+
+          $scope.$on($scope.tracks_balanced[index].emiter_name + '.ready', function ($event, player) {
+            applyPreset($scope.tracks_balanced[index].yt_player);
+            callback();
+
           });
         };
 
-        var updateTracks = function() {
-          var next = null;
-          if($scope.play_data.next_track) {
-            next = $scope.play_data.next_track.original_index;
+
+        $scope.tracks_balanced = [];
+        var nextLoad = 0;
+        var loadPlayers = function() {
+          if($scope.tracks[nextLoad]) {
+            loadPlayer(nextLoad, function(){
+              nextLoad++;
+              $timeout(loadPlayers,100);
+            })
           }
+        };
+
+        var applyPreset = function(player) {
+          player.setVolume($scope.play_data.volume);
+          player.unMute();
+          player.seekTo(0);
+          player.playVideo();
+          player.pauseVideo();
+        };
+
+        var setViewInfo = function() {
+          $scope.play_data.track = $scope.tracks_balanced[$scope.play_data.track_index];
+          var next_playlist_index = playlistOrder.indexOf($scope.play_data.track_index) + 1;
+          var next_track_index = typeof(playlistOrder[next_playlist_index]) !== 'undefined' ? playlistOrder[next_playlist_index] : playlistOrder[0];
+          $scope.play_data.next_track = $scope.tracks_balanced[next_track_index];
+
+
+          $scope.play_data.background = player_service.getBG($scope.tracks_balanced[$scope.play_data.track_index]);
+        };
+
+
+
+        $scope.player_ready = false;
+        var playlistOrder = [];
+        var initPlaylist = function() {
+          for(var i in $scope.tracks) {
+            playlistOrder[i] = parseInt(i);
+          }
+
+          if ($scope.options.shuffle) {
+            playlistOrder = player_service.mixArray(playlistOrder);
+          }
+          $scope.play_data.playlist_index = 0;
+          $scope.play_data.track_index = playlistOrder[$scope.play_data.playlist_index];
+          setViewInfo();
+
+
+          var intervalStart = (new Date()).valueOf().toString() + Math.random().toString();
+          $rootScope.intervals[intervalStart] = $interval(loop, 200);
+
+          var intervalStart = (new Date()).valueOf().toString() + Math.random().toString();
+          $rootScope.intervals[intervalStart] = $interval(updateTracks,2000);
+
+
+          $scope.player_ready = true;
+        };
+
+        var loopCounter = 0;
+
+        var loop = function () {
+          loopCounter++;
+            $scope.actions.updateProgress();
+            // update state:
+            $scope.play_data.status = $scope.tracks_balanced[$scope.play_data.track_index].yt_player.currentState;
+        };
+
+        var updateTracks = function() {
+
+          var next_playlist_index = $scope.play_data.playlist_index + 1;
+          if(typeof(playlistOrder[next_playlist_index]) === 'undefined') {
+            next_playlist_index = 0;
+          }
+
           $http.post('/api/songs/update_state',{
             update_db: 1,
             uid: $scope.server_id,
             tracks: $scope.tracks,
-            trackIndex: $scope.currTrack,
-            next_track: next
+            trackIndex: $scope.play_data.track_index,
+            next_track: next_playlist_index
           });
         };
+
+        // watch for new tracks
+        var watcher = $scope.$watch('tracks.length', function() {
+          updateTracks();
+          if($scope.empty_server && $scope.tracks.length > 0) {
+
+          }
+        });
 
         var fixMissingTracksData = function(tracks, cb) {
           for(var i in tracks) {
@@ -76,279 +183,101 @@ angular.module('aplayerApp')
         };
 
 
-        //var trackList;
-        var init = function () {
 
-          fixMissingTracksData($scope.tracks, function(){
-            if ($scope.options.shuffle) {
-              // shuffling tracks ...
-              $scope.trackList = player_service.mixArray($scope.tracks, true);
-            }
-            else {
-              $scope.trackList = player_service.mixArray($scope.tracks, false);
-            }
+        $scope.init_players = function() {
+          if($scope.empty_server) {
+            return;
+          }
 
-            //var intervalStart = (new Date()).valueOf().toString() + Math.random().toString();
-            //$rootScope.intervals[intervalStart] = $interval(updateServer,2500);
-
-
-            var intervalStart = (new Date()).valueOf().toString() + Math.random().toString();
-            $rootScope.intervals[intervalStart] = $interval(updateTracks,2000);
-
-            if($scope.empty_server) {
-              return;
-            }
-
-            $scope.actions.setTrack($scope.play_data.track_index);
-            $scope.actions.preparePlayer(true)
-              .then(function (player) {
-
-                $scope.$on('youtube.player.ended', function ($event, player) {
-                  $scope.actions.trackEnded(player);
-                });
-
-                var intervalStart = (new Date()).valueOf().toString() + Math.random().toString();
-                $rootScope.intervals[intervalStart] = $interval(loop, 200);
-
-
-              });
+          fixMissingTracksData($scope.tracks,function(){
+            loadPlayers();
+            checkYTPlayers();
           });
-
-
-
-
 
         };
 
-
         $scope.actions = {
-          selectTrack: function(original_index) {
-            var now_index;
-            for(var i in $scope.trackList) {
-              if($scope.trackList[i].original_index == original_index) {
-                now_index = i;
-                break;
+          setTrackByOriginalIndex: function(index) {
+            $scope.play_data.track_index = index;
+            $scope.actions.applyIndex();
+          },
+
+          applyIndex: function() {
+            setViewInfo();
+            for(var i in $scope.tracks_balanced) {
+              // check if playing:
+              var player = $scope.tracks_balanced[i].yt_player;
+              var state = player.getPlayerState();
+              if(state >= 1) {
+                player.stopVideo();
               }
             }
 
-            $scope.play_data.track_index = now_index;
-            $scope.actions.setTrack($scope.play_data.track_index);
-            $scope.actions.applyNewTrack();
-          },
+            $scope.play_data.background = player_service.getBG($scope.tracks_balanced[$scope.play_data.track_index]);
 
-          setTrack: function (index) {
-
-            $scope.play_data.track = $scope.trackList[index];
-
-            $scope.play_data.background = player_service.getBG($scope.play_data.track);
-
-            // set view track as playing
-            var i = $scope.trackList[index].original_index;
-            $scope.currTrack = i;
-            $scope.play_data.original_index = i;
-
-
-            if ($scope.trackList[index + 1]) {
-              $scope.play_data.next_track = $scope.trackList[index + 1];
+            if($scope.play_data.user_status == "play") {
+              $scope.tracks_balanced[$scope.play_data.track_index].yt_player.playVideo();
             }
-            else {
-              $scope.play_data.next_track = $scope.trackList[0];
-            }
-          },
-
-          preparePlayer: function (start) {
-            var deferred = $q.defer();
-
-            if (start) {
-              $scope.player_id[0] = $scope.play_data.track.id;
-            }
-            else {
-              var p = $scope.play_data.player == 1 ? 0 : 1;
-              $scope.player_id[p] = $scope.play_data.next_track.id;
-            }
-
-            $scope.$on('youtube.player.ready', function ($event, player) {
-              $scope.actions.applyPreset(player);
-              deferred.resolve(player);
-            });
-
-            return deferred.promise;
 
           },
 
-          play_pause: function () {
-            if ($scope.play_data.status == "paused" || $scope.play_data.status == "unstarted") {
-              $scope.play_data.user_status = "play";
-              $scope.yt_player[$scope.play_data.player].playVideo();
+          trackEnded: function() {
+            $scope.actions.next();
+          },
 
-            }
-            else {
+          play_pause: function() {
+            if($scope.play_data.user_status == "play") {
               $scope.play_data.user_status = "pause";
-              $scope.yt_player[$scope.play_data.player].pauseVideo();
+              $scope.tracks_balanced[$scope.play_data.track_index].yt_player.pauseVideo();
             }
-
-            $scope.safeApply(function () {
-            });
-          },
-
-          play: function() {
-            //$scope.play_data.status = "playing";
-            $scope.yt_player[$scope.play_data.player].playVideo();
+            else {
+              $scope.play_data.user_status = "play";
+              $scope.tracks_balanced[$scope.play_data.track_index].yt_player.playVideo();
+            }
           },
 
           next: function() {
-
-            if (!$scope.trackList[$scope.play_data.track_index + 1]) {
-              $scope.play_data.track_index = 0;
+            var next_playlist_index = $scope.play_data.playlist_index + 1;
+            if(typeof(playlistOrder[next_playlist_index]) === 'undefined') {
+              next_playlist_index = 0;
             }
-            else {
-              var index = $scope.play_data.track_index + 1;
-              $scope.play_data.track_index = index;
-            }
-            try {
-              $scope.yt_player[$scope.play_data.player].stopVideo();
-            }
-            catch(e) {}
-
-            $scope.actions.setTrack($scope.play_data.track_index);
-            $scope.actions.applyNewTrack();
-
+            $scope.play_data.playlist_index = next_playlist_index;
+            $scope.play_data.track_index = playlistOrder[next_playlist_index];
+            $scope.actions.applyIndex();
           },
 
           prev: function() {
-            if($scope.play_data.track_index > 0) {
-              try {
-                $scope.yt_player[$scope.play_data.player].stopVideo();
-              }
-              catch(e) {
-
-              }
-              $scope.play_data.track_index--;
-              $scope.actions.applyNewTrack();
+            var prev_playlist_index = $scope.play_data.playlist_index - 1;
+            if(prev_playlist_index < 0) {
+              prev_playlist_index = playlistOrder.length - 1;
             }
-          },
-
-          applyNewTrack: function() {
-            $scope.actions.setTrack($scope.play_data.track_index);
-            $scope.actions.preparePlayer(true)
-              .then(function(){
-                $timeout(function(){
-                  $scope.actions.switchSong($scope.play_data.track_index, false, true);
-                },300);
-              });
-          },
-
-          applyPreset: function (player) {
-            player.setVolume($scope.play_data.volume);
-            player.unMute();
-            player.seekTo(0);
-            player.playVideo();
-            player.pauseVideo();
-          },
-
-          buffer_next: function() {
-
-            $scope.actions.preparePlayer();
-            $scope.play_data.buffered = true;
-          },
-
-          trackEnded: function(player) {
-            if (!$scope.trackList[$scope.play_data.track_index + 1]) {
-              //if ($scope.options.shuffle) {
-              //  // shuffling tracks ...
-              //  $scope.trackList = player_service.mixArray($scope.tracks, true);
-              //}
-              //else {
-              //  $scope.trackList = player_service.mixArray($scope.tracks, false);
-              //}
-              $scope.play_data.track_index = 0;
-            }
-            else {
-              $scope.play_data.track_index++;
-            }
-
-            $scope.actions.applyNewTrack();
-          },
-
-          setSong: function(track_index) {
-            var index;
-            for(var i in $scope.trackList) {
-              if(track_index == $scope.trackList[i].original_index) {
-                index = i;
-                break;
-              }
-            }
-            $scope.play_data.track_index = index;
-            $scope.actions.setTrack(index);
-
-            $scope.actions.preparePlayer(true)
-              .then(function(p){
-                $scope.actions.switchSong(index);
-              });
-
-
-          },
-
-          switchSong: function(index, switch_player, reset_player) {
-            try {
-              $scope.yt_player[0].stopVideo();
-              $scope.yt_player[1].stopVideo();
-            }
-            catch(e) {
-
-            }
-
-            // switch player
-            var p;
-            if(switch_player) {
-              p = $scope.play_data.player == 1 ? 0 : 1;
-            }
-            else {
-              p = $scope.play_data.player;
-            }
-
-            $scope.play_data.player = p;
-            if(reset_player) {
-              $scope.play_data.player = 0;
-            }
-
-            if($scope.play_data.user_status == "play") {
-              $scope.yt_player[$scope.play_data.player].playVideo();
-            }
-
-            // rest buffer
-            $scope.play_data.buffered = false;
-            $scope.safeApply(function () {});
-          },
-
-          removeSong: function(index) {
-            $scope.tracks.splice(index,1);
+            $scope.play_data.playlist_index = prev_playlist_index;
+            $scope.play_data.track_index = playlistOrder[prev_playlist_index];
+            $scope.actions.applyIndex();
           },
 
           goToTime: function(event) {
+            var track = $scope.tracks_balanced[$scope.play_data.track_index];
             var progressWidth = document.getElementById("progress_wrap").clientWidth;
-            var gotTo = Math.floor($scope.play_data.track.extra_data.duration.length * (event.offsetX/progressWidth));
+            var gotTo = Math.floor(track.extra_data.duration.length * (event.offsetX/progressWidth));
 
-            //console.log("go to " + gotTo);
-            $scope.yt_player[$scope.play_data.player].playVideo();
-            $scope.yt_player[$scope.play_data.player].pauseVideo();
-            $scope.yt_player[$scope.play_data.player].seekTo(gotTo);
+            track.yt_player.playVideo();
+            track.yt_player.pauseVideo();
+            track.yt_player.seekTo(gotTo);
 
             if($scope.play_data.user_status == "pause") {
               $scope.actions.updateProgress();
             }
             else {
-              $scope.actions.play();
+              track.yt_player.playVideo();
             }
-
-
-
           },
 
           updateProgress: function() {
             try {
-              var track_length = $scope.play_data.track.extra_data.duration.length;
-              var time = $scope.yt_player[$scope.play_data.player].getCurrentTime();
+              var track = $scope.tracks_balanced[$scope.play_data.track_index];
+              var track_length = track.extra_data.duration.length;
+              var time = track.yt_player.getCurrentTime();
               var time_left = Math.floor(track_length - time);
               $scope.play_data.timeToNext = player_service.getTimeFrameFormat(time_left);
 
@@ -357,49 +286,48 @@ angular.module('aplayerApp')
                 width: time/track_length * 100 + "%"
               };
 
-              if($scope.options.buffer_space > time_left && !$scope.play_data.buffered) {
-                $scope.actions.buffer_next();
-              }
-
               var fixed_time = player_service.getTimeFrameFormat(Math.floor(time));
               $scope.play_data.time = fixed_time;
-
-
-              $scope.tracks[$scope.trackList[$scope.play_data.track_index].original_index].currTime = fixed_time;
+              $scope.tracks[$scope.play_data.track_index].currTime = fixed_time;
 
               $scope.safeApply(function () {});
             }
             catch(e) {
               //console.log("Update progress error: " + e);
             }
-          }
-        };
+          },
 
-
-        init();
-
-        var loopCounter = 0;
-
-        var loop = function () {
-          loopCounter++;
-          if ($scope.yt_player[$scope.play_data.player]) {
-
-            $scope.actions.updateProgress();
-
-
-            if(loopCounter%5 == 0) {
-              //console.log($scope.yt_player[$scope.play_data.player]);
-              //console.log($scope.yt_player[$scope.play_data.player].getPlayerState());
-
+          removeSong: function(index) {
+            if($scope.tracks.length <= 1) {
+              alert("Error")
+              return;
             }
 
-            // update state:
-            $scope.play_data.status = $scope.yt_player[$scope.play_data.player].currentState;
+            if(index == $scope.play_data.track_index) {
+              $scope.actions.next();
+            }
+
+            var next_playlist_index = $scope.play_data.playlist_index + 1;
+            if(typeof(playlistOrder[next_playlist_index]) === 'undefined') {
+              next_playlist_index = 0;
+            }
 
 
-            $scope.safeApply(function () {});
+            $scope.tracks.splice(index,1);
+            $scope.tracks_balanced.splice(index,1);
+
+            playlistOrder.splice(playlistOrder.indexOf(index),1);
+
+
+            if(index == next_playlist_index) {
+              setViewInfo();
+            }
+
           }
+
         };
+
+
 
         $scope.smallestThumb = function(track) {
           return player_service.getSmallestThumb(track);
@@ -409,30 +337,25 @@ angular.module('aplayerApp')
           return player_service.getClosetSizeThumb(track, {width:130,height:110});
         };
 
-        // update server on list change
-        var watcher = $scope.$watch('play_data.track_index', function() {
-          // update player state:
-          updateServer();
-        });
+        $scope.addSongToList = function(index) {
+          var song = $scope.results[index];
 
-        // watch for new tracks
-        var watcher = $scope.$watch('tracks.length', function() {
-          if ($scope.options.shuffle) {
-            // shuffling tracks ...
-            $scope.trackList = player_service.mixArray($scope.tracks, true);
-          }
-          else {
-            $scope.trackList = player_service.mixArray($scope.tracks, false);
-          }
-          updateTracks();
-          if($scope.empty_server && $scope.tracks.length > 0) {
+          var new_track = {
+            name: song.snippet.title,
+            id: song.id.videoId
+          };
 
-          }
-        });
-
-
-
-
+          youtube.loadExtraData(new_track.id)
+            .success(function(extra_data){
+              new_track.extra_data = extra_data;
+              var index = $scope.tracks.length;
+              $scope.tracks[index] = new_track;
+              loadPlayer(index,function(){
+                $scope.results = null;
+                $scope.key = "";
+              });
+            });
+        };
 
 
         $scope.safeApply = function (fn) {
@@ -452,7 +375,6 @@ angular.module('aplayerApp')
           }
 
         };
-
 
       }
     };

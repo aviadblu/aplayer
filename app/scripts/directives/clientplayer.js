@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('aplayerApp')
-  .directive('clientplayer', ['$http','ngAudio',function ($http, ngAudio) {
+  .directive('clientplayer', ['$http','player_service',function ($http,player_service) {
     return {
       restrict: 'E',
       transclude: false,
@@ -21,9 +21,11 @@ angular.module('aplayerApp')
           socket = io();
           var line = 0;
           socket.on(uid + "_client", function (data) {
+
             $scope.safeApply(function(){
               $scope.tracks = data.tracks;
               $scope.trackIndex = data.trackIndex;
+              $scope.next_track = data.next_track;
             });
           });
         };
@@ -39,6 +41,10 @@ angular.module('aplayerApp')
           } else {
             this.$apply(fn);
           }
+        };
+
+        $scope.getTracksThumb = function(track) {
+          return player_service.getClosetSizeThumb(track, {width:130,height:110});
         };
 
 
