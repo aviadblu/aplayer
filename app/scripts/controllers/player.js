@@ -111,7 +111,17 @@ angular.module('aplayerApp')
 
 
     var trackC = 0;
-    var loadSongsData = function() {
+    var loadSongsData = function(force_reload) {
+      if(force_reload) {
+        $timeout(function(){
+          $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+          });
+        },3000)
+      }
+
       if(!$scope.tracks[trackC]) {
         if($scope.empty_server && $scope.tracks.length > 0) {
 
@@ -149,6 +159,8 @@ angular.module('aplayerApp')
         loadSongsData();
       }
     };
+
+    $scope.loadSongsData = loadSongsData;
 
     $scope.loadPlaylist = function() {
       var modalInstance = $modal.open({

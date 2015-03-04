@@ -340,6 +340,11 @@ angular.module('aplayerApp')
         $scope.addSongToList = function(index) {
           var song = $scope.results[index];
 
+
+          //
+
+
+
           var new_track = {
             name: song.snippet.title,
             id: song.id.videoId
@@ -347,12 +352,20 @@ angular.module('aplayerApp')
 
           youtube.loadExtraData(new_track.id)
             .success(function(extra_data){
+
+
+
+
               new_track.extra_data = extra_data;
               var index = $scope.tracks.length;
               $scope.tracks[index] = new_track;
               loadPlayer(index,function(){
                 $scope.results = null;
                 $scope.key = "";
+                if($scope.empty_server) {
+                  $scope.loadSongsData(true);
+                }
+
               });
             });
         };

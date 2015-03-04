@@ -19,14 +19,14 @@
   </div>
 </div>
 
-<div ng-if="!player_ready" class="preparing wait">
+<div ng-if="!player_ready && !empty_server" class="preparing wait">
   <div class="bg"></div>
   <div class="loader">Preparing your list..</div>
   <progressbar max="tracks.length" value="play_data.players_ready"><span style="color:#fff; white-space:nowrap;">{{play_data.players_ready}} / {{tracks.length}}</span></progressbar>
 </div>
 
 
-<div ng-if="player_ready" class="player_wrapper">
+<div ng-if="player_ready || empty_server" class="player_wrapper">
   <div id="player_bg" style="background-image:url({{play_data.background}})"></div>
 
   <div id="player_bottom" ng-if="!empty_server" ng-class="play_data.status">
