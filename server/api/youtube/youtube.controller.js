@@ -12,8 +12,8 @@ youTube.setKey('AIzaSyB1OOSpTREs85WUMvIgJvLTZKye4BVsoFU');
 var youtube = {
   search: function(req, res) {
 
-    var limit = req.query.limit + 5 || 10;
-    var return_limit = req.query.limit || 5;
+    var limit = req.query.limit + 10 || 15;
+    var return_limit = req.query.limit || 10;
     youTube.search(req.query.key, limit, function(resultData) {
 
       var c = 0;

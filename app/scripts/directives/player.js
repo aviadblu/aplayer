@@ -209,7 +209,7 @@ angular.module('aplayerApp')
               var player = $scope.tracks_balanced[i].yt_player;
               var state = player.getPlayerState();
               if(state >= 1) {
-                player.stopVideo();
+                applyPreset(player);
               }
             }
 
@@ -360,6 +360,15 @@ angular.module('aplayerApp')
               var index = $scope.tracks.length;
               $scope.tracks[index] = new_track;
               loadPlayer(index,function(){
+
+                for(var i in $scope.tracks) {
+                  playlistOrder[i] = parseInt(i);
+                }
+
+                if ($scope.options.shuffle) {
+                  playlistOrder = player_service.mixArray(playlistOrder);
+                }
+
                 $scope.results = null;
                 $scope.key = "";
                 if($scope.empty_server) {
@@ -384,7 +393,7 @@ angular.module('aplayerApp')
             }
           }
           catch (e) {
-            console.log("safe apply error: " + e);
+            //console.log("safe apply error: " + e);
           }
 
         };
